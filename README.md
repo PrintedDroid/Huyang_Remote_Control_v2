@@ -80,39 +80,39 @@ Designed for the DroidDivision Huyang build with the Printed-Droid PCB.
 
 **Web-UI Polish & Multi-Client**
 
-- Joystick-Bug fixed (JoyNeck rief sendBodyUpdate auf - seit v1.9)
-- Throttle auf Joystick/Slider (80 ms, statt >20 POSTs/s)
-- Neue Audio-UI (Track-Input, Play, Stop, Volume-Slider)
-- Neue Sequence-UI (greeting/surprised/sad/angry Buttons)
-- Status-Bar fixed oben: WiFi-Mode, IP, MQTT, Sequence-Wiedergabe
-- Error-Handler mit visueller Rueckmeldung (statt stillem Hang bei Netzproblemen)
-- Multi-Client-Servo-State unter Joysticks (Text-Anzeige)
-- Settings-Link sichtbar gemacht, fetch mode korrigiert
+- Joystick bug fixed (JoyNeck was calling sendBodyUpdate - present since v1.9)
+- Throttle on joystick/slider (80 ms, instead of >20 POSTs/s)
+- New audio UI (track input, play, stop, volume slider)
+- New sequence UI (greeting/surprised/sad/angry buttons)
+- Status bar fixed at the top: WiFi mode, IP, MQTT, sequence playback
+- Error handler with visual feedback (instead of silent hang on network problems)
+- Multi-client servo state shown below joysticks (text display)
+- Settings link made visible, fetch mode corrected
 
 ### Version 2.3 (2026-05)
 
 **Reliability, Features & APIs**
 
-- DFPlayer-Init aktiviert (war auskommentiert)
-- WiFi: Auto-Retry vom AP-Mode zurueck nach STA alle 60s
-- WiFi: Boot-STA-Timeout 10s -> 5s
-- NeoPixel-Status-LEDs: Boot/Connect/STA/AP/Error/OTA
-- OTA-Updates aktiv (Hostname "huyang")
+- DFPlayer init enabled (was commented out)
+- WiFi: auto-retry back from AP mode to STA every 60s
+- WiFi: boot STA timeout 10s -> 5s
+- NeoPixel status LEDs: Boot/Connect/STA/AP/Error/OTA
+- OTA updates active (hostname "huyang")
 - Optional HTTP basic auth for the web interface
-- Audio-Web-API (/audio/play, /audio/stop, /audio/volume)
-- HuyangSequence-Klasse mit 4 vordefinierten Animationen
-- MQTT-Integration (optional, via #define HUYANG_MQTT_ENABLED)
+- Audio Web API (/audio/play, /audio/stop, /audio/volume)
+- HuyangSequence class with 4 pre-defined animations
+- MQTT integration (optional, via #define HUYANG_MQTT_ENABLED)
 
 ### Version 2.2 (2026-05)
 
 **Printed-Droid PCB Pinout**
 
-- ESP32-Block auf Lolin/WeMos ESP32 D1 Mini auf Printed-Droid-PCB umgestellt
-- I2C/SPI nutzen ESP32-Default-Pins
-- DFPlayer-Richtung korrigiert (TX statt RX)
-- TFT-RST auf -1 (PCB fuehrt Display-RST direkt an ESP-RST)
-- NeoPixel auf GPIO 17 (kein Boot-Strap, kein Konflikt)
-- ESP8266-Block analog gefixt (war Original-Bug)
+- ESP32 block switched to Lolin/WeMos ESP32 D1 Mini on the Printed-Droid PCB
+- I2C/SPI now use ESP32 default pins
+- DFPlayer direction corrected (TX instead of RX)
+- TFT RST set to -1 (PCB ties display RST directly to ESP RST)
+- NeoPixel moved to GPIO 17 (no boot-strap, no conflict)
+- ESP8266 block fixed accordingly (was an original v1.9 bug)
 
 ### Version 2.1 (2025-03)
 
