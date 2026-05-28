@@ -107,7 +107,7 @@ void HuyangBody::setStatus(Status s)
 		break;
 	case StatusConnectedSTA:
 		setChestColor(0, 128, 0); // gruen
-		_statusRevertAt = millis() + 2000; // nach 2s zurueck zu Default
+		_statusRevertAt = millis() + 2000; // revert to default after 2s
 		break;
 	case StatusAPMode:
 		setChestColor(96, 0, 96); // magenta

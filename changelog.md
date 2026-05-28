@@ -1,126 +1,126 @@
 # Changelog
 
 ## 2.9 Single-Upload (No-LittleFS-Mode)
-* UI-Assets (alle 13 HTML/CSS/JS-Files) in PROGMEM eingebettet (WebAssets.h)
-* WebServer servt alles aus PROGMEM via send_P() - kein LittleFS-Zugriff mehr
-* gen-webassets.ps1 Generator-Skript: liest data/*.* und erzeugt WebAssets.h
-* Custom-Sequence-Storage von LittleFS auf EEPROM umgestellt
-  - HuyangConfig: neues customSeqBlob[224] + customSeqCount Feld
-  - Config-Version 3, EEPROM-Size auf 1024 erweitert
-  - SequenceStep packed (7 Bytes, static_assert garantiert)
-* LittleFS-Dependency komplett entfernt (Include, .begin(), readFile/writeFile)
-* **End-User-Workflow:** Sketch flashen - fertig. Kein LittleFS-Plugin mehr noetig!
-* Flash-Verbrauch steigt um ~67 KB (UI-Assets) - immer noch ~50 % frei
+* All 13 HTML/CSS/JS UI assets embedded in PROGMEM (WebAssets.h)
+* WebServer serves everything from PROGMEM via send_P() - no more LittleFS access
+* gen-webassets.ps1 generator script: reads data/*.* and produces WebAssets.h
+* Custom-sequence storage moved from LittleFS to EEPROM
+  - HuyangConfig: new customSeqBlob[224] + customSeqCount fields
+  - Config schema version 3, EEPROM size raised to 1024
+  - SequenceStep packed to 7 bytes (static_assert guarantees layout)
+* LittleFS dependency completely removed (includes, .begin(), readFile/writeFile)
+* **End-user workflow:** flash the sketch - done. No LittleFS plugin needed anymore!
+* Flash usage grows by ~67 KB (UI assets) - still ~50 % free
 
-## 2.8 Big-Feature-Bundle
+## 2.8 Big Feature Bundle
 ### Face / Eyes
-* Eye-Color-Presets (Huyang, Sith, Jedi, K-2SO, White, Toxic)
-* Pupillen-Groesse als Slider (6-80 px) via /eye/pupil?size=N
-* Closed-Eye-Color konfigurierbar (/eye/closedcolor?hex=...)
-* Pupille bewegt sich im Idle-Mode leicht im Auge (autom. zufaellig)
+* Eye-color presets (Huyang, Sith, Jedi, K-2SO, White, Toxic)
+* Pupil size as a slider (6-80 px) via /eye/pupil?size=N
+* Closed-eye color configurable (/eye/closedcolor?hex=...)
+* Pupil drifts slightly in the eye while in idle mode (random)
 
 ### Audio
-* Volume-Mute-Button (merkt vorherige Lautstaerke)
+* Volume mute button (remembers previous volume)
 
 ### Servos
-* Speed-Presets (slow/normal/fast) via /servo/speed?preset=X
-* Skaliert Easing-Dauer 0.5x / 1x / 2x
+* Speed presets (slow/normal/fast) via /servo/speed?preset=X
+* Scales easing duration 0.5x / 1x / 2x
 
 ### Sequences
-* Self-Test-Sequenz (/test/run oder /sequence?name=selftest)
-* Sequence-Progress-Bar in der Status-Bar
-* Custom-Sequence-Editor: JSON-Editor im Web, Save in LittleFS, abspielen via /sequence?name=custom
-* HuyangSequence::getProgress() und getName() fuer Status-Display
+* Self-test sequence (/test/run or /sequence?name=selftest)
+* Sequence progress bar in the status bar
+* Custom-sequence editor: JSON editor in the web UI, saved to LittleFS, played via /sequence?name=custom
+* HuyangSequence::getProgress() and getName() for status display
 
 ### UI
-* Fullscreen/Kiosk-Modus Toggle-Button
-* Heap-Monitor in Status-Bar (warnt bei <8 KB)
-* Settings-Page komplett funktional (Feature-Flags, Config Backup/Restore, Reboot, Factory Reset)
-* Calibration-Page funktional (direkte PCA9685-Channel-Slider 150-595)
-* API-Dokumentations-Seite unter /api
+* Fullscreen / kiosk-mode toggle button
+* Heap monitor in the status bar (warns when <8 KB)
+* Settings page fully functional (feature flags, config backup/restore, reboot, factory reset)
+* Calibration page functional (direct PCA9685 channel sliders 150-595)
+* API documentation page at /api
 
 ### Connectivity
-* WiFi-Scan + Selector im Web-Interface (/wifi/scan, /wifi/connect)
-* MQTT Home-Assistant-Auto-Discovery (Buttons fuer Sequenzen, Volume-Number, Eye-State-Select)
+* WiFi scan + selector in the web UI (/wifi/scan, /wifi/connect)
+* MQTT Home Assistant auto-discovery (buttons for sequences, volume number, eye-state select)
 
 ### Security
-* HuyangBody::setRawServo() fuer Calibration direkt am PCA9685
-* HuyangConfig get/set/reset Endpoints in WebServer
-* Simpler CSRF-Schutz auf state-aendernden GET-Endpoints bei aktivem Web-Auth
+* HuyangBody::setRawServo() for calibration directly on the PCA9685
+* HuyangConfig get/set/reset endpoints in WebServer
+* Simple CSRF protection on state-changing GET endpoints when web auth is enabled
 
-## 2.7 Theme-Trennung + Light-Mode
-* Eye-Color faerbt jetzt NUR die Eye-Vorschau-Kreise, nicht die UI-Akzentfarbe
-  - Neue CSS-Variable --eye-color (separate von --accent)
-  - Buttons + Borders bleiben gelb auch bei abweichender Augenfarbe
-* Light-Theme als Option ueber Toggle-Button (oben rechts neben Settings)
-  - data-theme="light" CSS-Overrides via :root
-  - Persistenz in localStorage["huyang.theme"]
-  - Rein client-side, kein ESP-Roundtrip noetig
-  - Akzentfarben + Eye-Color bleiben in beiden Themes gleich (User-Wahl)
-  - Icon zeigt Ziel-Theme: ☾ im Light-Mode, ☀ im Dark-Mode
+## 2.7 Theme Split + Light Mode
+* Eye color now affects ONLY the eye preview circles, not the UI accent color
+  - New CSS variable --eye-color (separate from --accent)
+  - Buttons and borders stay yellow regardless of chosen eye color
+* Light theme as an option via toggle button (top right, next to Settings)
+  - data-theme="light" CSS overrides via :root
+  - Persisted in localStorage["huyang.theme"]
+  - Pure client-side, no ESP round-trip needed
+  - Accent + eye color stay user-controlled across both themes
+  - Icon shows target theme: ☾ in light mode, ☀ in dark mode
 
-## 2.6 Pupillen-Feature + Credits
-* Pupille als optionales Feature: an/aus per Checkbox, Farbe per Color-Picker (Default Schwarz)
+## 2.6 Pupil Feature + Credits
+* Pupil as an optional feature: on/off via checkbox, color via color picker (default black)
 * HuyangFace::setPupilEnabled/setPupilColorRGB/setPupilColorHex APIs
-* Wird in openEyes / openEye nach Animation gezeichnet (fillCircle in der Mitte)
-* Sofortige Aktualisierung bei Aenderung wenn Auge offen ist
-* Neuer Endpoint /eye/pupil?enabled=1&hex=000000 (beide Parameter optional)
-* Pupil-UI in Face-Sektion (Checkbox + Color-Picker neben Eye-Color)
-* Demo-Visualisierung: Pupille als Punkt auf den Eye-Vorschau-Kreisen
-* Footer-Text: "Made with heart by Jeanette Mueller - Enhanced by Printed-Droid"
+* Drawn at the end of openEyes / openEye (fillCircle in the center)
+* Immediate refresh when changed while the eye is open
+* New endpoint /eye/pupil?enabled=1&hex=000000 (both params optional)
+* Pupil UI in the face section (checkbox + color picker next to eye color)
+* Demo visualization: pupil as a dot on the eye preview circles
+* Footer text: "Made with heart by Jeanette Mueller - Enhanced by Printed-Droid"
 
-## 2.5 Responsive Redesign & Eye-Color
-* CSS komplett neu (mobile-first responsive, max-width 720px Container)
-  - Kompakte Schriften (14px Base statt 30pt), gefuehlt 50% kompakter auf Desktop
-  - Card-basiertes Layout mit ".section"-Klassen
-  - Kleinere Eye-Vorschau-Kreise (90-100px statt 200px)
-  - Joystick 240-320px je nach Viewport (vorher fix 400px)
-  - Modernes Dark Theme mit CSS Custom Properties
-  - Touch-Targets >= 44px (WCAG)
-  - Media Queries fuer 480/768/1024px Breakpoints
-* User-konfigurierbare Augenfarbe ueber Color-Picker im Web-UI
-  - HuyangFace::setEyeColorRGB() und setEyeColorHex() (RGB888 -> RGB565 mit Display-Invertierung)
-  - Neuer Endpoint /eye/color?hex=ffcc00
-  - Live-Preview im Web (kleines farbiges Vorschau-Kreischen)
-  - Soforige Display-Aktualisierung wenn Augen offen sind
+## 2.5 Responsive Redesign & Eye Color
+* CSS rewritten from scratch (mobile-first responsive, max-width 720px container)
+  - Compact font sizes (14px base instead of 30pt), roughly 50% tighter on desktop
+  - Card-based layout with ".section" classes
+  - Smaller eye preview circles (90-100px instead of 200px)
+  - Joystick 240-320px depending on viewport (was fixed at 400px)
+  - Modern dark theme via CSS custom properties
+  - Touch targets >= 44px (WCAG)
+  - Media queries for 480/768/1024px breakpoints
+* User-configurable eye color via color picker in the web UI
+  - HuyangFace::setEyeColorRGB() and setEyeColorHex() (RGB888 -> RGB565 with display inversion)
+  - New endpoint /eye/color?hex=ffcc00
+  - Live preview in the web UI (small colored swatch)
+  - Immediate display refresh when eyes are open
 
 ## 2.4 Web-UI Polish & Multi-Client
-* Joystick-Bug behoben: JoyNeck-Callback rief faelschlicherweise sendBodyUpdate() statt sendNeckUpdate() auf (bestand seit v1.9)
-* fetch mode 'no-cors' -> 'same-origin' (semantisch korrekt)
-* Settings-Link in index.html sichtbar (war auskommentiert -> /settings.html unerreichbar)
-* Throttle (80 ms) auf sendNeckUpdate / sendBodyUpdate - verhindert >20 POSTs/s beim Joystick-Wackeln
-* Neue Audio-UI: index.audio.html mit Track-Input, Play, Stop, Volume-Slider
-* Neue Sequence-UI: index.sequence.html mit 4 Buttons (greeting/surprised/sad/angry) + Stop
-* Status-Bar fixed oben: zeigt WiFi-Mode, IP, MQTT-Status, Sequence-Wiedergabe - alle 5s aktualisiert
-* Neuer Endpoint GET /status liefert System-State-JSON
-* Error-Handling: rote Status-Bar bei Offline, gelbe bei einzelnem Request-Fehler (statt stillem Hang)
-* Multi-Client-Sync: Server-bekannte Servo-States werden als Text unter den Joysticks angezeigt
-* CSS: Padding fuer Status-Bar, Audio-Controls-Styling, monospace Remote-State
+* Joystick bug fixed: JoyNeck callback was wrongly calling sendBodyUpdate() instead of sendNeckUpdate() (present since v1.9)
+* fetch mode 'no-cors' -> 'same-origin' (semantically correct)
+* Settings link in index.html made visible (was commented out -> /settings.html unreachable)
+* Throttle (80 ms) on sendNeckUpdate / sendBodyUpdate - prevents >20 POSTs/s while wiggling the joystick
+* New Audio UI: index.audio.html with track input, play, stop, volume slider
+* New Sequence UI: index.sequence.html with 4 buttons (greeting/surprised/sad/angry) + stop
+* Status bar fixed at the top: shows WiFi mode, IP, MQTT status, sequence playback - refreshed every 5s
+* New endpoint GET /status returns system-state JSON
+* Error handling: red status bar when offline, yellow on single failed request (instead of silent hang)
+* Multi-client sync: server-known servo states shown as text below the joysticks
+* CSS: padding for status bar, audio controls styling, monospace remote-state
 
 ## 2.3 Reliability, Features & APIs
-* DFPlayer wird jetzt im Setup initialisiert (huyangAudio->setup() war auskommentiert)
-* WiFi: Auto-Retry vom AP-Mode zurueck nach STA alle 60s (vorher: einmal AP, immer AP)
-* WiFi: Boot-STA-Timeout reduziert von 10s auf 5s (Boot fuehlt sich nicht mehr tot an)
-* NeoPixel-Status-LEDs: rot=Boot, gelb=WiFi-Connect, gruen=STA ok, magenta=AP, rot-blink=Error/OTA
-* OTA-Updates aktiviert (ArduinoOTA, Hostname "huyang") - flashen ueber WiFi ohne USB
-* Web-Interface mit optionalem HTTP-Basic-Auth (in config.h aktivierbar)
-* Audio-Web-API: /audio/play?track=N, /audio/stop, /audio/volume?v=N
-* HuyangSequence-Klasse: zeitgesteuerte Animationen (Eyes+Body+Neck+Audio synchron)
-  Vordefiniert: greeting, surprised, sad, angry - via /sequence?name=X triggerbar
-* MQTT-Integration (optional, via #define HUYANG_MQTT_ENABLED in config.h)
+* DFPlayer is now initialized in setup (huyangAudio->setup() was commented out)
+* WiFi: auto-retry back to STA from AP mode every 60s (was: once AP, always AP)
+* WiFi: boot STA timeout reduced from 10s to 5s (boot no longer feels dead)
+* NeoPixel status LEDs: red=boot, yellow=WiFi connecting, green=STA ok, magenta=AP, red-blink=error/OTA
+* OTA updates enabled (ArduinoOTA, hostname "huyang") - flashing over WiFi without USB
+* Web interface with optional HTTP basic auth (enable in config.h)
+* Audio Web API: /audio/play?track=N, /audio/stop, /audio/volume?v=N
+* HuyangSequence class: time-scheduled animations (eyes + body + neck + audio in sync)
+  Pre-defined: greeting, surprised, sad, angry - triggered via /sequence?name=X
+* MQTT integration (optional, via #define HUYANG_MQTT_ENABLED in config.h)
   Subscribe: huyang/cmd/{eye,sequence,audio/...,neck/...,body/...}
   Publish: huyang/state/status
-* Servo-Frequenz dokumentiert (bewusst 60 Hz, SERVOMIN/MAX darauf kalibriert)
+* Servo frequency documented (intentionally 60 Hz, SERVOMIN/MAX calibrated for it)
 
 ## 2.2 Printed-Droid PCB Pinout
-* ESP32-Block in pins.h umgestellt auf Lolin/WeMos ESP32 D1 Mini auf Printed-Droid-PCB
-  (PCB-Sockel D0..D8 = ESP32 GPIO 26/22/21/17/16/18/19/23/5)
-* I2C und SPI nutzen jetzt ESP32-Default-Pins (SDA=21, SCL=22, SCK=18, MOSI=23)
-* DFPlayer-Richtung korrigiert: TX=GPIO 19 (D6), RX=-1 (PCB hat keine Rueckleitung)
-* TFT-RST auf -1 gesetzt (PCB fuehrt Display-RST direkt an ESP-RST)
-* NeoPixel auf GPIO 17 (D3) - kein Boot-Strap mehr, kein Konflikt
-* ESP8266-Block analog gefixt (war Original-Bug: RST=0 kollidierte mit NeoPixel=0,
-  DFPlayer-Richtung verkehrt) - betrifft alle, die v2 noch auf ESP8266 D1 Mini bauen
+* ESP32 block in pins.h switched to Lolin/WeMos ESP32 D1 Mini on Printed-Droid PCB
+  (PCB sockets D0..D8 = ESP32 GPIO 26/22/21/17/16/18/19/23/5)
+* I2C and SPI now use ESP32 default pins (SDA=21, SCL=22, SCK=18, MOSI=23)
+* DFPlayer direction corrected: TX=GPIO 19 (D6), RX=-1 (PCB has no return line)
+* TFT RST set to -1 (PCB ties display RST directly to ESP RST)
+* NeoPixel moved to GPIO 17 (D3) - no boot-strap conflict anymore
+* ESP8266 block fixed accordingly (was original v1.9 bug: RST=0 collided with NeoPixel=0,
+  DFPlayer direction reversed) - affects anyone still building v2 on an ESP8266 D1 Mini
 
 ## 2.1 Multi-Board Support & Bug Fixes
 * Multi-board support: ESP8266, ESP32, ESP32-S3 — automatic pin selection via pins.h

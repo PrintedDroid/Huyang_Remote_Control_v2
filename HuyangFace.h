@@ -84,7 +84,7 @@ private:
 	// Closed-eye user RGB (before display inversion)
 	uint8_t _closedR = 255, _closedG = 255, _closedB = 255;
 	void drawPupil(Arduino_GFX *eye);
-	void redrawOpenEyes(); // helper: re-fill + pupil auf beide Augen wenn offen
+	void redrawOpenEyes(); // helper: re-fill + draw pupil on both eyes if currently open
 
 	EyeState _leftEyeLastSelectedState = Blink;
 	EyeState _rightEyeLastSelectedState = Blink;

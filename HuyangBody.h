@@ -33,7 +33,7 @@ public:
 
 	void updateChestLights();
 
-	// Direkter PCA9685-Zugriff fuer Calibration-Page (raw PWM 0-4095)
+	// Direct PCA9685 access for the calibration page (raw PWM 0-4095)
 	void setRawServo(uint8_t channel, uint16_t pwm);
 
 	// Status-LED API - setzt die Chest-NeoPixel-Farbe (sichtbar binnen 100 ms)
@@ -41,7 +41,7 @@ public:
 		StatusDefault,       // dunkelblau (Standard-Betrieb)
 		StatusBoot,          // rot
 		StatusConnectingSTA, // gelb
-		StatusConnectedSTA,  // gruen (kurz, dann zurueck zu Default)
+		StatusConnectedSTA,  // green (brief, then back to default)
 		StatusAPMode,        // magenta
 		StatusError          // rot blinkend
 	};
@@ -59,11 +59,11 @@ private:
 	neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
 
 	// Status-LED State
-	uint32_t _chestColor = 0;       // wird in setup() auf Default-Blue gesetzt
+	uint32_t _chestColor = 0;       // set to default blue in setup()
 	bool _blinkActive = false;
 	bool _blinkState = false;
 	unsigned long _blinkPrevious = 0;
-	unsigned long _statusRevertAt = 0; // 0 = nie reverten; sonst millis() wann zurueck zu Default
+	unsigned long _statusRevertAt = 0; // 0 = never revert; otherwise millis() when to return to default
 };
 
 #endif

@@ -29,52 +29,52 @@ Designed for the DroidDivision Huyang build with the Printed-Droid PCB.
 
 ### Version 2.9 (2026-05) — Single-Upload, no LittleFS
 
-- **UI-Assets in PROGMEM eingebettet** (WebAssets.h, auto-generiert via `gen-webassets.ps1`)
-- LittleFS-Dependency komplett entfernt
-- Custom-Sequence-Storage von LittleFS auf EEPROM umgestellt
-- HuyangConfig: Version 3, EEPROM-Size 1024, customSeqBlob[224]
-- **End-User-Workflow:** nur Sketch flashen, kein LittleFS-Plugin mehr noetig
-- Flash steigt um ~67 KB (UI-Assets), kein RAM-Mehrverbrauch
+- **UI assets embedded in PROGMEM** (WebAssets.h, auto-generated via `gen-webassets.ps1`)
+- LittleFS dependency completely removed
+- Custom-sequence storage moved from LittleFS to EEPROM
+- HuyangConfig: schema version 3, EEPROM size 1024, customSeqBlob[224]
+- **End-user workflow:** flash the sketch only, no LittleFS plugin needed
+- Flash grows by ~67 KB (UI assets), no extra RAM usage
 
-### Version 2.8 (2026-05) — Big-Feature-Bundle
+### Version 2.8 (2026-05) — Big Feature Bundle
 
-- Eye-Color-Presets (Huyang, Sith, Jedi, K-2SO, White, Toxic)
-- Pupillen-Groesse als Slider (6-80 px)
-- Closed-Eye-Color konfigurierbar
-- Pupillen-Idle-Bewegung (im Automatic-Mode wandert die Pupille)
-- Volume-Mute-Button
-- Servo-Speed-Presets (slow/normal/fast)
-- Self-Test-Sequenz + /test/run Endpoint
-- Sequence-Progress-Bar in Status-Bar
-- Custom-Sequence-Editor (JSON-Editor, in v2.9 nach EEPROM verschoben)
-- Fullscreen/Kiosk-Modus
-- Heap-Monitor in Status-Bar (warnt bei <8 KB)
-- Settings-Page komplett funktional (Feature-Flags, Backup/Restore, Reboot, Factory-Reset)
-- Calibration-Page funktional (PCA9685-Channel-Slider 150-595)
-- API-Dokumentations-Seite unter /api
-- WiFi-Scan + Selector im Web-Interface
-- MQTT Home-Assistant-Auto-Discovery
-- Simpler CSRF-Schutz auf state-aendernden GETs
+- Eye-color presets (Huyang, Sith, Jedi, K-2SO, White, Toxic)
+- Pupil size as a slider (6-80 px)
+- Closed-eye color configurable
+- Pupil idle drift (pupil wanders in automatic mode)
+- Volume mute button
+- Servo speed presets (slow/normal/fast)
+- Self-test sequence + /test/run endpoint
+- Sequence progress bar in the status bar
+- Custom-sequence editor (JSON editor, moved to EEPROM in v2.9)
+- Fullscreen / kiosk mode
+- Heap monitor in the status bar (warns when <8 KB)
+- Settings page fully functional (feature flags, backup/restore, reboot, factory reset)
+- Calibration page functional (PCA9685 channel sliders 150-595)
+- API documentation page at /api
+- WiFi scan + selector in the web UI
+- MQTT Home Assistant auto-discovery
+- Simple CSRF protection on state-changing GETs
 
-### Version 2.7 (2026-05) — Theme-Trennung + Light-Mode
+### Version 2.7 (2026-05) — Theme Split + Light Mode
 
-- Eye-Color faerbt nur Eye-Vorschau-Kreise, nicht UI-Akzentfarbe
-- Light-Theme als Option (toggle-Button, persistiert in localStorage)
+- Eye color only tints the eye preview circles, not the UI accent
+- Light theme as an option (toggle button, persisted in localStorage)
 
-### Version 2.6 (2026-05) — Pupillen-Feature + Credits
+### Version 2.6 (2026-05) — Pupil Feature + Credits
 
-- Pupille als optionales Feature (an/aus per Checkbox, Farbe per Color-Picker, Default Schwarz)
+- Pupil as an optional feature (on/off via checkbox, color via color picker, default black)
 - HuyangFace::setPupil* APIs
 - Endpoint /eye/pupil
 - Footer: "Made with heart by Jeanette Mueller — Enhanced by Printed-Droid"
 
-### Version 2.5 (2026-05) — Responsive Redesign & Eye-Color
+### Version 2.5 (2026-05) — Responsive Redesign & Eye Color
 
-- CSS komplett neu (mobile-first responsive, max-width 720px)
-- Card-basiertes Layout, kompakte Schriften (14-15 px)
-- Modernes Dark Theme mit CSS Custom Properties
-- User-konfigurierbare Augenfarbe ueber Color-Picker
-- HuyangFace::setEyeColor APIs + /eye/color Endpoint
+- CSS rewritten from scratch (mobile-first responsive, max-width 720px)
+- Card-based layout, compact fonts (14-15 px)
+- Modern dark theme via CSS custom properties
+- User-configurable eye color via color picker
+- HuyangFace::setEyeColor APIs + /eye/color endpoint
 
 ### Version 2.4 (2026-05)
 
@@ -98,7 +98,7 @@ Designed for the DroidDivision Huyang build with the Printed-Droid PCB.
 - WiFi: Boot-STA-Timeout 10s -> 5s
 - NeoPixel-Status-LEDs: Boot/Connect/STA/AP/Error/OTA
 - OTA-Updates aktiv (Hostname "huyang")
-- Optionales HTTP-Basic-Auth fuer Web-Interface
+- Optional HTTP basic auth for the web interface
 - Audio-Web-API (/audio/play, /audio/stop, /audio/volume)
 - HuyangSequence-Klasse mit 4 vordefinierten Animationen
 - MQTT-Integration (optional, via #define HUYANG_MQTT_ENABLED)
@@ -242,46 +242,46 @@ All pin definitions are in `pins.h`. No manual pin changes needed.
 4. Search for `esp` and install the appropriate package
 5. Select your board under **Tools** -> **Board**
 
-#### Board Settings - **ESP8266 D1 Mini** (EMPFOHLEN für Printed-Droid PCB)
+#### Board Settings - **ESP8266 D1 Mini** (RECOMMENDED for the Printed-Droid PCB)
 
-Diese Settings sind **wichtig** — besonders MMU + lwIP für das volle Feature-Set:
+These settings are **important** — especially MMU + lwIP for the full feature set:
 
-| Setting | Value | Warum |
+| Setting | Value | Why |
 |---|---|---|
-| Board | `LOLIN(WEMOS) D1 mini (clone)` oder `Generic ESP8266 Module` | |
-| Upload Speed | `921600` | schnell |
-| Debug port | `Disabled` | spart RAM |
-| Debug Level | `None` | spart Flash |
-| Flash Size | **`4MB (FS:none OTA:~1019KB)`** | **kein LittleFS mehr nötig!** |
-| C++ Exceptions | `Disabled (new aborts on oom)` | Standard |
-| Flash Frequency | `40MHz` | stabil |
-| Flash Mode | `DOUT (compatible)` | kompatibel mit allen D1-Mini-Clones |
-| **lwIP Variant** | **`v2 Lower Memory`** | **spart IRAM** |
-| **MMU** | **`16KB cache + 48KB IRAM`** | **erweitert IRAM von 32 → 48 KB - PFLICHT für Feature-Set** |
-| Non-32-Bit Access | `Use pgm_read macros for IRAM/PROGMEM` | korrekt für PROGMEM-UI |
-| **SSL Support** | **`Basic SSL ciphers (lower ROM use)`** | **spart ~50 KB Flash** |
-| Stack Protection | `Disabled` | spart Flash |
-| VTables | `Flash` | spart RAM |
-| Erase Flash | `Only Sketch` | EEPROM bleibt erhalten |
-| **CPU Frequency** | **`160 MHz`** | **doppelte Performance, flüssigere Animationen** |
+| Board | `LOLIN(WEMOS) D1 mini (clone)` or `Generic ESP8266 Module` | |
+| Upload Speed | `921600` | fast |
+| Debug port | `Disabled` | saves RAM |
+| Debug Level | `None` | saves flash |
+| Flash Size | **`4MB (FS:none OTA:~1019KB)`** | **no LittleFS needed anymore!** |
+| C++ Exceptions | `Disabled (new aborts on oom)` | default |
+| Flash Frequency | `40MHz` | stable |
+| Flash Mode | `DOUT (compatible)` | compatible with all D1 Mini clones |
+| **lwIP Variant** | **`v2 Lower Memory`** | **saves IRAM** |
+| **MMU** | **`16KB cache + 48KB IRAM`** | **raises IRAM from 32 → 48 KB - REQUIRED for full feature set** |
+| Non-32-Bit Access | `Use pgm_read macros for IRAM/PROGMEM` | correct for PROGMEM UI |
+| **SSL Support** | **`Basic SSL ciphers (lower ROM use)`** | **saves ~50 KB flash** |
+| Stack Protection | `Disabled` | saves flash |
+| VTables | `Flash` | saves RAM |
+| Erase Flash | `Only Sketch` | EEPROM is preserved |
+| **CPU Frequency** | **`160 MHz`** | **double the performance, smoother animations** |
 
-#### Board Settings - **ESP32 D1 Mini** (Lolin/WeMos, passt in selben PCB-Sockel)
+#### Board Settings - **ESP32 D1 Mini** (Lolin/WeMos, fits in the same PCB socket)
 
 | Setting | Value |
 |---|---|
-| Board | `WEMOS D1 MINI ESP32` oder `ESP32 Dev Module` |
+| Board | `WEMOS D1 MINI ESP32` or `ESP32 Dev Module` |
 | Upload Speed | `921600` |
 | CPU Frequency | `240MHz (WiFi/BT)` |
 | Flash Frequency | `80MHz` |
 | Flash Mode | `QIO` |
 | Flash Size | `4MB (32Mb)` |
-| Partition Scheme | `Default 4MB with spiffs` (SPIFFS wird nicht genutzt) |
+| Partition Scheme | `Default 4MB with spiffs` (SPIFFS is not used) |
 | PSRAM | `Disabled` |
 | Erase All Flash | `Disabled` |
 
-#### Board Settings - ESP32-S3 (separate Build, andere Hardware)
+#### Board Settings - ESP32-S3 (separate build, different hardware)
 
-Nur falls du den S3-Zero-Standalone-Sketch nutzt — siehe `Huyang_Remote_Control_S3Zero_V1/`.
+Only if you use the standalone S3 Zero sketch — see `Huyang_Remote_Control_S3Zero_V1/`.
 
 ### Step 2: Install Libraries
 
@@ -290,42 +290,42 @@ Open **Tools** -> **Manage Libraries** and install each of the following:
 | Search for | Install | Notes |
 |---|---|---|
 | `ESPAsyncWebServer` | ESPAsyncWebServer by lacamera | bzw. ESP32Async-Fork |
-| `ESPAsyncTCP` (ESP8266) / `AsyncTCP` (ESP32) | Standard | wird automatisch als Dependency vorgeschlagen |
+| `ESPAsyncTCP` (ESP8266) / `AsyncTCP` (ESP32) | standard build | automatically pulled in as a dependency |
 | `PWM Servo Driver` | Adafruit PWM Servo Driver Library | |
 | `Adafruit NeoPixel` | Adafruit NeoPixel | |
 | `Arduino GFX Library` | GFX Library for Arduino by Moon On Our Nation | |
 | `DFRobotDFPlayerMini` | DFRobotDFPlayerMini | |
 | `ArduinoJson` | ArduinoJson by Benoit Blanchon | **v7.x** erforderlich |
-| `PubSubClient` | PubSubClient by Nick O'Leary | **nur** wenn `HUYANG_MQTT_ENABLED=true` in config.h |
+| `PubSubClient` | PubSubClient by Nick O'Leary | **only** when `HUYANG_MQTT_ENABLED=true` in config.h |
 
 ### Step 3: Configure
 
 Edit `config.h` to set your default values (used on first boot or after factory reset):
 
-1. WiFi SSID + Passwort (oder leer lassen für AP-Mode-Fallback "HuyangWifiControl")
+1. WiFi SSID + password (or leave empty for the AP-mode fallback "HuyangWifiControl")
 2. Choose WiFi mode: `1` = STA (connect to network), `0` = AP (hotspot)
 3. Set hotspot name/password if using AP mode
 4. Enable or disable hardware features to match your build
 
 After first upload, all settings can be changed via Serial CLI or Web-Settings and are stored in EEPROM.
 
-### Step 4: Upload — **EIN Schritt**
+### Step 4: Upload — **ONE step**
 
-Ab v2.9 wird **nur noch** der Sketch hochgeladen. Web-UI-Assets sind in PROGMEM eingebettet, Custom-Sequence wird in EEPROM gespeichert. Kein LittleFS-Plugin nötig.
+As of v2.9, **only the sketch** is uploaded. Web-UI assets are embedded in PROGMEM, custom sequences are stored in EEPROM. No LittleFS plugin needed.
 
-1. Board in Arduino IDE auswählen (Pins werden automatisch über `pins.h` gesetzt)
-2. Settings oben anwenden (besonders MMU + lwIP + SSL!)
+1. Select your board in Arduino IDE (pins are auto-selected via `pins.h`)
+2. Apply the settings shown above (especially MMU + lwIP + SSL!)
 3. **Upload** (`Ctrl+U`)
-4. Serial Monitor öffnen (115200 baud)
+4. Open Serial Monitor (115200 baud)
 5. Browser → `http://huyang.local`
 
-Fertig. Kein zweiter Upload, kein Plugin, keine Verwirrung.
+Done. No second upload, no plugin, no confusion.
 
-**Wenn du `data/`-Files veränderst**, dann vor dem Compile:
+**If you modify any `data/` files**, regenerate before compiling:
 ```powershell
 powershell -ExecutionPolicy Bypass -File gen-webassets.ps1
 ```
-Das regeneriert `WebAssets.h` aus dem `data/`-Verzeichnis. Dann Sketch neu compilen + uploaden.
+This rebuilds `WebAssets.h` from the `data/` directory. Then recompile and upload the sketch.
 
 ### Project File Structure
 
@@ -343,16 +343,16 @@ Huyang_Remote_Control_v2/
 ├── HuyangAudio.h/.cpp            # DFPlayer Mini audio
 ├── EasingServo.h/.cpp            # Servo easing functions
 ├── WebServer.h/.cpp              # Web interface + trigger endpoints
-├── HuyangSequence.h/.cpp         # Animation-Sequencer (Eyes+Body+Neck+Audio synchron)
-├── HuyangMqtt.h/.cpp             # MQTT-Integration (optional via #define)
-├── WebAssets.h                   # PROGMEM-embedded UI (auto-generiert)
-├── gen-webassets.ps1             # Generator-Skript fuer WebAssets.h
-├── data/                         # Source-Files fuer UI (Input fuer gen-webassets.ps1)
+├── HuyangSequence.h/.cpp         # Animation sequencer (eyes + body + neck + audio in sync)
+├── HuyangMqtt.h/.cpp             # MQTT integration (optional via #define)
+├── WebAssets.h                   # PROGMEM-embedded UI (auto-generated)
+├── gen-webassets.ps1             # Generator script for WebAssets.h
+├── data/                         # UI source files (input for gen-webassets.ps1)
 ├── changelog.md                  # Version history
 └── README.md                     # This file
 ```
 
-**Hinweis:** `data/` wird nicht mehr auf den ESP hochgeladen. Der Inhalt ist via `gen-webassets.ps1` in `WebAssets.h` als PROGMEM-Konstanten eingebettet und wird mit dem Sketch geflasht. Falls du HTML/CSS/JS aenderst → Generator-Skript ausfuehren, dann Sketch neu uploaden.
+**Note:** `data/` is no longer uploaded to the ESP. Its contents are embedded as PROGMEM constants in `WebAssets.h` via `gen-webassets.ps1` and shipped with the sketch. If you edit HTML/CSS/JS → run the generator script, then re-upload the sketch.
 
 ---
 
@@ -532,9 +532,9 @@ curl http://192.168.10.1/trigger/sound?id=3
 
 | Problem | Solution |
 |---------|----------|
-| Web interface shows blank page | `WebAssets.h` muss existieren — `gen-webassets.ps1` ausfuehren und Sketch neu uploaden |
+| Web interface shows blank page | `WebAssets.h` must exist — run `gen-webassets.ps1`, then re-upload the sketch |
 | IRAM overflow (`section .iram1 will not fit`) | MMU auf `16KB cache + 48KB IRAM` umstellen, lwIP auf `v2 Lower Memory`, SSL auf `Basic` |
-| Custom-Sequence verschwindet nach Reboot | EEPROM-Migration. Bei v2.9-Erst-Flash wird alte EEPROM-Config verworfen. Sequenz neu speichern. |
+| Custom sequence disappears after reboot | EEPROM migration. On first flash of v2.9 the old EEPROM config is discarded. Save the sequence again. |
 | Cannot connect to WiFi | Check SSID/password via CLI: `wifi ssid YourNetwork`, `wifi password YourPass`, `save`, `wifi reconnect` |
 | Servos not moving | Verify PCA9685 wiring and I2C address (0x40). Check feature flags with `config` |
 | Serial Monitor shows gibberish | Set baud rate to 115200 |

@@ -27,7 +27,7 @@ public:
 	void tiltNeckForward(double degree, double duration = 1000);
 	void rotateHead(double degree, double duration = 1000);
 
-	// Speed-Preset (skaliert effektiv die uebergebenen Durations)
+	// Speed preset (effectively scales the durations passed in)
 	// slow=0.5 (alles langsamer), normal=1.0, fast=2.0 (alles schneller)
 	void setSpeedMultiplier(float m);
 	float getSpeedMultiplier();

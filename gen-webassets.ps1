@@ -1,9 +1,9 @@
 # =============================================================================
 # Huyang Web-Assets Generator
-# Liest alle data/*.html, *.css, *.js und schreibt sie als PROGMEM-Konstanten
-# in WebAssets.h. Damit muss kein LittleFS mehr geflasht werden.
+# Reads all data/*.html, *.css, *.js files and embeds them as PROGMEM
+# constants in WebAssets.h. With this, no LittleFS upload is needed.
 #
-# Verwendung: aus dem Sketch-Ordner:
+# Usage: from inside the sketch folder:
 #   powershell -ExecutionPolicy Bypass -File gen-webassets.ps1
 # =============================================================================
 
@@ -12,7 +12,7 @@ $dataDir = Join-Path $root "data"
 $outFile = Join-Path $root "WebAssets.h"
 
 if (-not (Test-Path $dataDir)) {
-    Write-Host "FEHLER: data/ Verzeichnis nicht gefunden in $root" -ForegroundColor Red
+    Write-Host "ERROR: data/ directory not found in $root" -ForegroundColor Red
     exit 1
 }
 
@@ -36,7 +36,7 @@ $mapping = @{
 $header = @"
 // =============================================================================
 // AUTO-GENERIERT von gen-webassets.ps1 - NICHT VON HAND BEARBEITEN
-// Quelle: data/*.* Dateien
+// Source: data/*.* files
 // Generiert: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 // =============================================================================
 #ifndef WebAssets_h
@@ -53,15 +53,15 @@ $totalBytes = 0
 foreach ($file in $mapping.Keys | Sort-Object) {
     $path = Join-Path $dataDir $file
     if (-not (Test-Path $path)) {
-        Write-Host "  WARN: $file fehlt, skip" -ForegroundColor Yellow
+        Write-Host "  WARN: $file missing, skipping" -ForegroundColor Yellow
         continue
     }
     $content = Get-Content -Path $path -Raw -Encoding UTF8
     if ($null -eq $content) { $content = "" }
 
-    # Pruefe ob der Delimiter ")HUY(" im Content vorkommt - sollte nie
+    # Check whether the delimiter ")HUY(" appears in the content - it never should
     if ($content -match '\)HUY"') {
-        Write-Host "  FEHLER: $file enthaelt Delimiter-Sequenz )HUY"" - waehle anderen Delimiter!" -ForegroundColor Red
+        Write-Host "  ERROR: $file contains delimiter sequence )HUY"" - pick a different delimiter!" -ForegroundColor Red
         exit 1
     }
 
@@ -78,10 +78,10 @@ foreach ($file in $mapping.Keys | Sort-Object) {
 
 [void]$out.AppendLine("#endif // WebAssets_h")
 
-# Mit UTF-8 (ohne BOM) schreiben - wichtig fuer Arduino-Compiler
+# Write as UTF-8 without BOM - important for the Arduino compiler
 [System.IO.File]::WriteAllText($outFile, $out.ToString(), [System.Text.UTF8Encoding]::new($false))
 
 Write-Host ""
-Write-Host "=== Fertig ===" -ForegroundColor Cyan
-Write-Host "Datei : $outFile"
+Write-Host "=== Done ===" -ForegroundColor Cyan
+Write-Host "File  : $outFile"
 Write-Host "Bytes : $totalBytes ($([math]::Round($totalBytes/1KB, 1)) KB)"

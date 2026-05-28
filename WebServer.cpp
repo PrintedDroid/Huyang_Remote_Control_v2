@@ -5,7 +5,7 @@
 #include "HuyangSequence.h"
 #include "WebAssets.h"
 
-// File-scope-Helper fuer Custom-Sequence-JSON <-> SequenceStep[]
+// File-scope helpers for converting custom-sequence JSON <-> SequenceStep[]
 static SequenceStep::Action actionFromString(const String &act)
 {
 	if (act == "eye")            return SequenceStep::ActionEyeState;
@@ -73,7 +73,7 @@ void WebServer::setup(bool enableEyes,
 	_enableBodyMovement = enableBodyMovement;
 	_enableBodyRotation = enableBodyRotation;
 	_enableTorsoLights = enableTorsoLights;
-	// Kein LittleFS noetig - UI ist in PROGMEM (WebAssets.h)
+	// No LittleFS needed - UI is in PROGMEM (WebAssets.h)
 }
 
 void WebServer::setComponents(HuyangFace *face, HuyangNeck *neck, HuyangBody *body, HuyangAudio *audio)
@@ -91,7 +91,7 @@ void WebServer::setAuth(bool enabled, const char *user, const char *pass)
 	_authPass = pass ? String(pass) : "";
 	if (enabled)
 	{
-		Serial.print(F("Web-Auth aktiv (user: "));
+		Serial.print(F("Web auth enabled (user: "));
 		Serial.print(_authUser);
 		Serial.println(F(")"));
 	}
@@ -108,9 +108,9 @@ bool WebServer::checkAuth(AsyncWebServerRequest *request)
 	return true;
 }
 
-// Simple CSRF-Schutz: pruefe ob Origin/Referer zum eigenen Host passt.
-// Greift nur wenn Web-Auth aktiv ist - sonst ist das Geraet eh offen im LAN.
-// Akzeptiert auch fehlende Header (z.B. curl), nur explizit fremder Origin wird blockiert.
+// Simple CSRF protection: check if Origin/Referer matches our own host.
+// Only enforced when web auth is enabled - otherwise the device is open on the LAN anyway.
+// Missing headers (e.g. curl) are accepted; only an explicitly foreign origin is rejected.
 bool WebServer::checkSameOrigin(AsyncWebServerRequest *request)
 {
 	if (!_authEnabled) return true;
@@ -120,7 +120,7 @@ bool WebServer::checkSameOrigin(AsyncWebServerRequest *request)
 	String check;
 	if (request->hasHeader("Origin")) check = request->header("Origin");
 	else if (request->hasHeader("Referer")) check = request->header("Referer");
-	else return true; // kein Origin/Referer -> nicht-Browser-Request, durchlassen
+	else return true; // no Origin/Referer -> non-browser request, allow through
 
 	// erlaubt: http://host oder http://host:port am Anfang
 	if (check.indexOf("://" + host) > 0) return true;
@@ -282,7 +282,7 @@ void WebServer::setupTriggerRoutes()
 		sendTriggerResponse(request, "sound"); });
 
 	// =========================================================================
-	// Audio-API: gezielte DFPlayer-Kontrolle
+	// Audio API: targeted DFPlayer control
 	// =========================================================================
 	_server->on("/audio/play", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -310,7 +310,7 @@ void WebServer::setupTriggerRoutes()
 		sendTriggerResponse(request, "audio/volume"); });
 
 	// =========================================================================
-	// Sequence-API: vordefinierte Animation-Sequenzen abspielen
+	// Sequence API: play pre-defined animation sequences
 	// =========================================================================
 	_server->on("/sequence", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -320,7 +320,7 @@ void WebServer::setupTriggerRoutes()
 			String name = request->getParam("name")->value();
 			bool ok = false;
 			if (name == "custom") {
-				// Custom-Sequence direkt aus EEPROM-Blob abspielen
+				// Play custom sequence directly from EEPROM blob
 				if (_config && _config->data.customSeqCount > 0) {
 					const SequenceStep *st = (const SequenceStep *)_config->data.customSeqBlob;
 					_sequence->playCustomSteps(st, _config->data.customSeqCount, "custom");
@@ -348,7 +348,7 @@ void WebServer::setupTriggerRoutes()
 		sendTriggerResponse(request, "sequence/stop"); });
 
 	// =========================================================================
-	// Custom-Sequence: save (POST JSON) / load / play - persistiert in EEPROM
+	// Custom sequence: save (POST JSON) / load / play - persisted in EEPROM
 	// =========================================================================
 	_server->on(
 		"/sequence/save", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr,
@@ -395,7 +395,7 @@ void WebServer::setupTriggerRoutes()
 		request->send(200, "application/json", out); });
 
 	// =========================================================================
-	// Config: get / set / reset (Feature-Flags + WiFi-Settings)
+	// Config: get / set / reset (feature flags + WiFi settings)
 	// =========================================================================
 	_server->on("/config/get", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -492,7 +492,7 @@ void WebServer::setupTriggerRoutes()
 		sendTriggerResponse(request, "wifi/connect"); });
 
 	// =========================================================================
-	// Calibration: direkter PCA9685-Channel-Write (/cal/servo?ch=N&pwm=M)
+	// Calibration: direct PCA9685 channel write (/cal/servo?ch=N&pwm=M)
 	// =========================================================================
 	_server->on("/cal/servo", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -507,7 +507,7 @@ void WebServer::setupTriggerRoutes()
 		sendTriggerResponse(request, "cal/servo"); });
 
 	// =========================================================================
-	// Self-Test (/test/run) - durchlaeuft Servos, Augen, Audio
+	// Self-Test (/test/run) - cycles servos, eye states, plays audio
 	// =========================================================================
 	_server->on("/test/run", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -516,7 +516,7 @@ void WebServer::setupTriggerRoutes()
 		sendTriggerResponse(request, "test/run"); });
 
 	// =========================================================================
-	// Servo-Speed-Preset (/servo/speed?preset=slow|normal|fast)
+	// Servo speed preset (/servo/speed?preset=slow|normal|fast)
 	// =========================================================================
 	_server->on("/servo/speed", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -537,10 +537,10 @@ void WebServer::setupTriggerRoutes()
 		request->send(200, "application/json", out); });
 
 	// =========================================================================
-	// Status-Endpoint: liefert aktuellen System-Zustand fuer das Web-Dashboard
+	// Status endpoint: returns the current system state for the web dashboard
 	// =========================================================================
 	// =========================================================================
-	// Eye-Color-API: User kann Augenfarbe per Hex setzen (/eye/color?hex=ffcc00)
+	// Eye-Color API: user sets eye color via hex (/eye/color?hex=ffcc00)
 	// =========================================================================
 	_server->on("/eye/color", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -563,7 +563,7 @@ void WebServer::setupTriggerRoutes()
 		request->send(200, "application/json", out); });
 
 	// =========================================================================
-	// Pupil-API: an/aus + Farbe + Groesse (/eye/pupil?enabled=1&hex=000000&size=30)
+	// Pupil API: enable/disable + color + size (/eye/pupil?enabled=1&hex=000000&size=30)
 	// =========================================================================
 	_server->on("/eye/pupil", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{
@@ -598,7 +598,7 @@ void WebServer::setupTriggerRoutes()
 		request->send(200, "application/json", out); });
 
 	// =========================================================================
-	// Closed-Eye-Color (/eye/closedcolor?hex=ffffff)
+	// Closed-eye color (/eye/closedcolor?hex=ffffff)
 	// =========================================================================
 	_server->on("/eye/closedcolor", HTTP_GET, [&](AsyncWebServerRequest *request)
 				{

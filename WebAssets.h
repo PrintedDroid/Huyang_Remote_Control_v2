@@ -1,13 +1,13 @@
 // =============================================================================
 // AUTO-GENERIERT von gen-webassets.ps1 - NICHT VON HAND BEARBEITEN
-// Quelle: data/*.* Dateien
-// Generiert: 2026-05-27 17:16:06
+// Source: data/*.* files
+// Generiert: 2026-05-28 10:36:35
 // =============================================================================
 #ifndef WebAssets_h
 #define WebAssets_h
 
 #include <Arduino.h>
-// ----- api.html (5216 bytes) -----
+// ----- api.html (5214 bytes) -----
 const char WEB_API_HTML[] PROGMEM = R"HUY(
 <h4>HTTP API Reference</h4>
 <p style="font-size: 12px; color: var(--text-dim);">Alle Endpoints liefern JSON. Bei aktiver Auth: HTTP Basic Auth Header.</p>
@@ -74,7 +74,7 @@ const char WEB_API_HTML[] PROGMEM = R"HUY(
 <h5>Sequences</h5>
 <table class="api-table">
 <tr><td class="method">GET</td><td class="path">/sequence?name=X</td><td class="desc">X = greeting, surprised, sad, angry, selftest</td></tr>
-<tr><td class="method">GET</td><td class="path">/sequence/stop</td><td class="desc">Aktuelle Sequenz abbrechen</td></tr>
+<tr><td class="method">GET</td><td class="path">/sequence/stop</td><td class="desc">Abort the current sequence</td></tr>
 </table>
 </div>
 
@@ -89,9 +89,9 @@ const char WEB_API_HTML[] PROGMEM = R"HUY(
 <h5>System / Test</h5>
 <table class="api-table">
 <tr><td class="method">GET</td><td class="path">/test/run</td><td class="desc">Self-Test: Servos sweep, Eyes durch alle States, Audio anspielen</td></tr>
-<tr><td class="method">GET</td><td class="path">/wifi/scan</td><td class="desc">Liste verfuegbarer WiFi-Netze</td></tr>
+<tr><td class="method">GET</td><td class="path">/wifi/scan</td><td class="desc">List available WiFi networks</td></tr>
 <tr><td class="method">POST</td><td class="path">/config/backup</td><td class="desc">EEPROM-Config als JSON-Download</td></tr>
-<tr><td class="method">POST</td><td class="path">/config/restore</td><td class="desc">JSON-Upload zurueck in EEPROM</td></tr>
+<tr><td class="method">POST</td><td class="path">/config/restore</td><td class="desc">Upload JSON back into EEPROM</td></tr>
 <tr><td class="method">GET</td><td class="path">/reboot</td><td class="desc">ESP neustarten</td></tr>
 </table>
 </div>
@@ -366,7 +366,7 @@ const char WEB_NECK_HTML[] PROGMEM = R"HUY(
 </div>
 )HUY";
 
-// ----- index.sequence.html (2532 bytes) -----
+// ----- index.sequence.html (2528 bytes) -----
 const char WEB_SEQUENCE_HTML[] PROGMEM = R"HUY(
 <h4>Sequences</h4>
 
@@ -411,7 +411,7 @@ function customSeqLoad() {
 }
 function customSeqSave() {
     const txt = document.getElementById('custom_seq_json').value;
-    try { JSON.parse(txt); } catch (e) { alert('Ungueltiges JSON: ' + e.message); return; }
+    try { JSON.parse(txt); } catch (e) { alert('Invalid JSON: ' + e.message); return; }
     fetch('/sequence/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: txt })
         .then(r => r.json()).then(() => alert('Saved'));
 }
@@ -422,7 +422,7 @@ function customSeqPlay() {
 </script>
 )HUY";
 
-// ----- javascript.js (19538 bytes) -----
+// ----- javascript.js (19546 bytes) -----
 const char WEB_JAVASCRIPT_JS[] PROGMEM = R"HUY(
 var automatic = true;
 
@@ -468,8 +468,8 @@ function changeAutomatic(newState) {
     sendData(data);
 }
 
-// Throttle-Helper: feuert max 1x pro `ms`, mit trailing-Aufruf damit die letzte
-// Position garantiert ankommt. Verhindert >20 POSTs/s beim Joystick-Wackeln.
+// Throttle helper: fires at most once per `ms`, with a trailing call so the last
+// position is guaranteed to arrive. Prevents >20 POSTs/s while wiggling joystick.
 function throttle(fn, ms) {
     let lastCall = 0;
     let trailing = null;
@@ -674,7 +674,7 @@ function updateUserInterface() {
         slider_bodyTiltSideways.value = body_tiltSideways;
     }
 
-    // Multi-Client-Sync: zeige Server-bekannten Servo-State unter den Joysticks
+    // Multi-client sync: display the server-known servo state below each joystick
     const neckState = document.getElementById('neck_state');
     if (neckState != null) {
         neckState.innerText = 'rot ' + (neck_rotate || 0) +
@@ -700,7 +700,7 @@ function systemInit() {
 
     getServerData();
 
-    // Status-Bar sofort fuellen und periodisch aktualisieren
+    // Populate status bar immediately and then poll periodically
     pollStatus();
     setInterval(pollStatus, 5000);
 
@@ -746,7 +746,7 @@ function systemInit() {
 }
 
 // =========================================================================
-// Status-Bar + Error-Handler (v2.3)
+// Status bar + error handler (v2.3+)
 // =========================================================================
 function setStatus(text, klass) {
     const bar = document.getElementById('status_bar');
@@ -793,7 +793,7 @@ async function pollStatus() {
 }
 
 // =========================================================================
-// Audio + Sequence API-Aufrufe (v2.3)
+// Audio + Sequence API calls (v2.3+)
 // =========================================================================
 async function getJson(url) {
     try {
@@ -802,7 +802,7 @@ async function getJson(url) {
         return await r.json();
     } catch (e) {
         setStatus('request failed: ' + url, 'warning');
-        // Status-Bar wird beim naechsten pollStatus wieder ueberschrieben
+        // Status bar will be overwritten on the next pollStatus call
         return null;
     }
 }
@@ -905,7 +905,7 @@ function sendPupilSettings() {
 }
 
 // =========================================================================
-// Theme-Toggle (rein client-side, persistiert in localStorage)
+// Theme toggle (client-side only, persisted in localStorage)
 // =========================================================================
 function applyTheme(theme) {
     if (theme === 'light') {
@@ -940,8 +940,8 @@ document.addEventListener('fullscreenchange', () => {
     if (btn) btn.innerText = document.fullscreenElement ? '🗗' : '⛶';
 });
 
-// Sofort beim Laden anwenden (vor systemInit damit kein Flicker)
-// Wichtig: laeuft VOR DOMContentLoaded, deshalb wird Icon spaeter in systemInit nochmal gesetzt
+// Apply immediately at script load (before systemInit so no flicker).
+// Note: runs BEFORE DOMContentLoaded, so the icon will be re-applied later when the button exists.
 function _initTheme() {
     try {
         const saved = localStorage.getItem('huyang.theme') || 'dark';
@@ -949,7 +949,7 @@ function _initTheme() {
     } catch (e) { applyTheme('dark'); }
 }
 _initTheme();
-// nochmal nach DOM-Load damit der Button (falls erst spaeter geladen) das Icon kriegt
+// Run again after DOMContentLoaded so the button (if loaded later) gets its icon
 if (document.readyState !== 'loading') _initTheme();
 else document.addEventListener('DOMContentLoaded', _initTheme);
 
@@ -1418,7 +1418,7 @@ const char WEB_JOYSTICK_JS[] PROGMEM = R"HUY(
      };
  });)HUY";
 
-// ----- settings.html (6022 bytes) -----
+// ----- settings.html (5977 bytes) -----
 const char WEB_SETTINGS_HTML[] PROGMEM = R"HUY(
 <h4>Settings</h4>
 
@@ -1442,12 +1442,12 @@ const char WEB_SETTINGS_HTML[] PROGMEM = R"HUY(
 
 <h4>WiFi</h4>
 <div id="wifi_container" style="text-align: left; padding: 0 12px;">
-    <div style="font-size:12px; color: var(--text-dim); margin-bottom: 8px;">Scan + verbinden im AP-Mode wenn STA verloren.</div>
+    <div style="font-size:12px; color: var(--text-dim); margin-bottom: 8px;">Scan + connect in AP mode if STA was lost.</div>
     <div class="menuContainer">
         <a href="#" class="button" onclick="wifiScan(); return false;">🔄 Scan</a>
     </div>
     <div id="wifi_list" style="margin-top: 8px;"></div>
-    <div style="font-size:12px; color: var(--text-dim); margin: 12px 0 4px 0;">Or manuelle Eingabe:</div>
+    <div style="font-size:12px; color: var(--text-dim); margin: 12px 0 4px 0;">Or enter manually:</div>
     <input id="wifi_ssid_in" placeholder="SSID" class="audio_input" style="width: 90%;" /><br>
     <input id="wifi_pass_in" placeholder="Password" type="password" class="audio_input" style="width: 90%; margin-top: 6px;" /><br>
     <div class="menuContainer">
@@ -1483,7 +1483,7 @@ function loadFeatures() {
             c.innerHTML += '<label style="display:block; padding:6px 0;"><input type="checkbox" id="' + id + '" ' + checked + ' style="width:20px;height:20px;vertical-align:middle;margin-right:8px;accent-color:var(--accent)"> ' + label + '</label>';
         });
     }).catch(() => {
-        document.getElementById('features_container').innerHTML = '<span style="color:var(--danger)">Konnte Config nicht laden</span>';
+        document.getElementById('features_container').innerHTML = '<span style="color:var(--danger)">Could not load config</span>';
     });
 }
 function saveFeatures() {
@@ -1511,7 +1511,7 @@ function wifiConnect() {
     const pass = document.getElementById('wifi_pass_in').value;
     if (!ssid) { alert('SSID fehlt'); return; }
     fetch('/wifi/connect?ssid=' + encodeURIComponent(ssid) + '&pass=' + encodeURIComponent(pass))
-        .then(r => r.json()).then(() => alert('WiFi config gespeichert. Reboot fuer neuen STA-Versuch.'));
+        .then(r => r.json()).then(() => alert('WiFi config saved. Reboot for new STA attempt.'));
 }
 
 // ====== System ======
@@ -1529,28 +1529,28 @@ function configRestore(input) {
     if (!file) return;
     const r = new FileReader();
     r.onload = function (e) {
-        if (!confirm('Restore Config aus ' + file.name + '? Aktuelle Settings werden ueberschrieben.')) return;
+        if (!confirm('Restore config from ' + file.name + '? Current settings will be overwritten.')) return;
         fetch('/config/set', { method:'POST', headers:{'Content-Type':'application/json'}, body: e.target.result })
-            .then(r => r.json()).then(() => alert('Restored. Reboot empfohlen.'));
+            .then(r => r.json()).then(() => alert('Restored. Reboot recommended.'));
     };
     r.readAsText(file);
 }
-function runSelfTest() { fetch('/test/run').then(() => alert('Self-Test laeuft, dauert ~23s')); }
+function runSelfTest() { fetch('/test/run').then(() => alert('Self-Test running, takes ~23s')); }
 function rebootEsp() {
-    if (!confirm('ESP wirklich neustarten?')) return;
-    fetch('/reboot').then(() => alert('Reboot gesendet, ca. 5s warten...'));
+    if (!confirm('Really reboot the ESP?')) return;
+    fetch('/reboot').then(() => alert('Reboot sent, wait ~5s...'));
 }
 function factoryReset() {
-    if (!confirm('Factory Reset loescht ALLE Settings (WiFi, Features). Wirklich?')) return;
-    if (!confirm('Wirklich wirklich? Dies kann nicht rueckgaengig gemacht werden.')) return;
-    fetch('/config/reset').then(() => alert('Reset. Reboot folgt.'));
+    if (!confirm('Factory reset erases ALL settings (WiFi, features). Really proceed?')) return;
+    if (!confirm('Really really? This cannot be undone.')) return;
+    fetch('/config/reset').then(() => alert('Reset done. Reboot follows.'));
 }
 
 loadFeatures();
 </script>
 )HUY";
 
-// ----- styles.css (9356 bytes) -----
+// ----- styles.css (9364 bytes) -----
 const char WEB_STYLES_CSS[] PROGMEM = R"HUY(
 /* ============================================================================
    Huyang Remote Control v2.4 - Responsive UI
@@ -1565,9 +1565,9 @@ const char WEB_STYLES_CSS[] PROGMEM = R"HUY(
 	--border: #333;
 	--text: #eee;
 	--text-dim: #888;
-	--accent: #fd2;           /* UI-Akzent (bleibt fest) */
+	--accent: #fd2;           /* UI accent (fixed, never changes) */
 	--accent-dark: #b90;
-	--eye-color: #ffdd22;     /* aktuelle Augenfarbe - aendert sich mit User-Picker */
+	--eye-color: #ffdd22;     /* current eye color - changes with user picker */
 	--eye-color-dark: #b90;   /* Border-Variante der Augenfarbe */
 	--pupil-color: #000000;
 	--danger: #c33;
@@ -1575,15 +1575,15 @@ const char WEB_STYLES_CSS[] PROGMEM = R"HUY(
 	--warn: #fa3;
 }
 
-/* Light-Theme - leicht graulich, nicht stechend hell */
+/* Light theme - slightly gray, not stark white */
 [data-theme="light"] {
-	--bg: #c8c8cc;          /* haupthintergrund - mittelgrau, kein weiss */
-	--bg-elev: #d8d8dc;     /* sections - etwas heller */
-	--bg-elev-2: #b8b8bc;   /* slider/input bg - etwas dunkler */
+	--bg: #c8c8cc;          /* main background - medium gray, not pure white */
+	--bg-elev: #d8d8dc;     /* sections - slightly lighter */
+	--bg-elev-2: #b8b8bc;   /* slider/input bg - slightly darker */
 	--border: #9090a0;
 	--text: #1a1a1c;
 	--text-dim: #50505a;
-	/* Akzentfarben + Eye-Color bleiben wie sie sind */
+	/* Accent + eye color remain user-controlled, untouched by theme */
 }
 
 * { box-sizing: border-box; }
@@ -1599,7 +1599,7 @@ body {
 	min-height: 100vh;
 }
 
-/* Container — max-width damit's auf Desktop nicht ausufert */
+/* Container - max-width so it doesn't sprawl on desktop */
 .app { max-width: 720px; margin: 0 auto; }
 
 h4 { margin: 0 0 8px 0; font-size: 15px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
@@ -1871,7 +1871,7 @@ footer { font-size: 10px; color: var(--text-dim); margin-top: 24px; }
 	.joystick { width: 320px; height: 320px; }
 }
 
-/* Touch-Devices: Hover deaktivieren damit's nicht beim Tap kleben bleibt */
+/* Touch devices: disable hover so it doesn't stick after a tap */
 @media (hover: none) {
 	.button:hover { background-color: var(--bg-elev); border-color: var(--border); }
 }

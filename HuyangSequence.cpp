@@ -1,25 +1,25 @@
 #include "HuyangSequence.h"
 
 // =========================================================================
-// Vordefinierte Sequenzen - als static const Arrays im Flash (PROGMEM-fae
-// hig, aber hier einfach im RODATA - Sequenzen sind klein)
+// Pre-defined sequences - static const arrays in flash (PROGMEM-capable,
+// but kept in RODATA here for simplicity - sequences are small)
 // =========================================================================
 
 static const SequenceStep SEQ_GREETING[] = {
 	{   0, SequenceStep::ActionSetAutomatic, 0, 0 },
 	{   0, SequenceStep::ActionEyeState,     HuyangFace::Open, 0 },
-	{ 200, SequenceStep::ActionNeckRotate,   0, 800 },        // Kopf zur Mitte
-	{ 400, SequenceStep::ActionAudioPlay,    1, 0 },          // Track 1
-	{ 600, SequenceStep::ActionNeckTiltForward, 30, 400 },    // leichtes Nicken hoch
-	{ 1000, SequenceStep::ActionNeckTiltForward, -20, 400 },  // dann runter
-	{ 1400, SequenceStep::ActionNeckTiltForward, 0, 400 },    // Mitte
-	{ 1800, SequenceStep::ActionSetAutomatic, 1, 0 },         // zurueck zu Auto-Mode
+	{ 200, SequenceStep::ActionNeckRotate,   0, 800 },        // head to center
+	{ 400, SequenceStep::ActionAudioPlay,    1, 0 },          // track 1
+	{ 600, SequenceStep::ActionNeckTiltForward, 30, 400 },    // slight nod up
+	{ 1000, SequenceStep::ActionNeckTiltForward, -20, 400 },  // then down
+	{ 1400, SequenceStep::ActionNeckTiltForward, 0, 400 },    // center
+	{ 1800, SequenceStep::ActionSetAutomatic, 1, 0 },         // back to automatic mode
 };
 
 static const SequenceStep SEQ_SURPRISED[] = {
 	{   0, SequenceStep::ActionSetAutomatic, 0, 0 },
 	{   0, SequenceStep::ActionEyeState,     HuyangFace::Open, 0 },
-	{   0, SequenceStep::ActionNeckTiltForward, 40, 200 },    // Kopf hoch (erschrocken)
+	{   0, SequenceStep::ActionNeckTiltForward, 40, 200 },    // head up (surprised)
 	{ 100, SequenceStep::ActionAudioPlay,    2, 0 },
 	{ 800, SequenceStep::ActionEyeState,     HuyangFace::Blink, 0 },
 	{ 1200, SequenceStep::ActionNeckTiltForward, 0, 600 },
@@ -29,7 +29,7 @@ static const SequenceStep SEQ_SURPRISED[] = {
 static const SequenceStep SEQ_SAD[] = {
 	{   0, SequenceStep::ActionSetAutomatic, 0, 0 },
 	{   0, SequenceStep::ActionEyeState,     HuyangFace::Sad, 0 },
-	{ 200, SequenceStep::ActionNeckTiltForward, -50, 1000 },  // Kopf nach unten
+	{ 200, SequenceStep::ActionNeckTiltForward, -50, 1000 },  // head down
 	{ 500, SequenceStep::ActionAudioPlay,    3, 0 },
 	{ 3000, SequenceStep::ActionNeckTiltForward, 0, 800 },
 	{ 3800, SequenceStep::ActionEyeState,    HuyangFace::Open, 0 },
@@ -40,7 +40,7 @@ static const SequenceStep SEQ_SELFTEST[] = {
 	{    0, SequenceStep::ActionSetAutomatic,    0, 0 },
 	{    0, SequenceStep::ActionEyeState,        HuyangFace::Open, 0 },
 	{    0, SequenceStep::ActionAudioPlay,       1, 0 },
-	// Neck Test
+	// Neck test
 	{  500, SequenceStep::ActionNeckRotate,      -100, 1500 },
 	{ 2200, SequenceStep::ActionNeckRotate,      100, 1500 },
 	{ 4000, SequenceStep::ActionNeckRotate,      0, 1000 },
@@ -50,14 +50,14 @@ static const SequenceStep SEQ_SELFTEST[] = {
 	{ 7800, SequenceStep::ActionNeckTiltSideways, 80, 0 },
 	{ 8500, SequenceStep::ActionNeckTiltSideways, -80, 0 },
 	{ 9200, SequenceStep::ActionNeckTiltSideways, 0, 0 },
-	// Body Test
+	// Body test
 	{ 9500, SequenceStep::ActionBodyRotate,      -100, 0 },
 	{ 11000, SequenceStep::ActionBodyRotate,     100, 0 },
 	{ 12500, SequenceStep::ActionBodyRotate,     0, 0 },
 	{ 13000, SequenceStep::ActionBodyTiltForward,  100, 0 },
 	{ 14500, SequenceStep::ActionBodyTiltForward,  -100, 0 },
 	{ 16000, SequenceStep::ActionBodyTiltForward,  0, 0 },
-	// Eye-States durchgehen
+	// Cycle through eye states
 	{ 17000, SequenceStep::ActionEyeState,       HuyangFace::Sad, 0 },
 	{ 18500, SequenceStep::ActionEyeState,       HuyangFace::Angry, 0 },
 	{ 20000, SequenceStep::ActionEyeState,       HuyangFace::Focus, 0 },
@@ -79,7 +79,7 @@ static const SequenceStep SEQ_ANGRY[] = {
 };
 
 // =========================================================================
-// Klasse
+// Class
 // =========================================================================
 
 HuyangSequence::HuyangSequence(HuyangFace *face, HuyangNeck *neck, HuyangBody *body, HuyangAudio *audio)

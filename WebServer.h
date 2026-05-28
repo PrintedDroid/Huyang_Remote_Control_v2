@@ -68,7 +68,7 @@ public:
 	void setStatusSources(HuyangWifi *wifi, HuyangMqtt *mqtt) { _wifi = wifi; _mqtt = mqtt; }
 	void setConfig(HuyangConfig *config) { _config = config; }
 
-	// HTTP Basic Auth fuer Web-Interface
+	// HTTP basic auth for the web interface
 	void setAuth(bool enabled, const char *user, const char *pass);
 
 private:

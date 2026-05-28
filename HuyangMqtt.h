@@ -4,8 +4,8 @@
 #include <Arduino.h>   // muss IMMER includiert sein - der Stub-Branch nutzt uint16_t
 #include "config.h"
 
-// Wenn MQTT global deaktiviert: Stub-Klasse die nichts macht.
-// So kompiliert der Sketch auch ohne PubSubClient-Library.
+// When MQTT is globally disabled: provide a stub class that does nothing.
+// This way the sketch also compiles without the PubSubClient library.
 
 #if HUYANG_MQTT_ENABLED
 
@@ -58,7 +58,7 @@ private:
 
 #else // HUYANG_MQTT_ENABLED == false
 
-// Stub - existiert nur damit der Aufrufer-Code kompiliert
+// Stub - exists only so the caller code still compiles
 class HuyangFace; class HuyangNeck; class HuyangBody; class HuyangAudio; class HuyangSequence;
 
 class HuyangMqtt
