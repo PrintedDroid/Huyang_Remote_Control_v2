@@ -7,9 +7,9 @@
 #include "HuyangBody.h"
 #include "HuyangAudio.h"
 
-// Eine Sequenz ist eine Liste zeitgesteuerter Aktionen.
-// Jeder Step hat einen Zeitpunkt (Offset in ms ab Sequenz-Start) und eine Aktion.
-// Das ermoeglicht koordinierte Performances (Augen + Bewegung + Audio synchron).
+// A sequence is a list of time-scheduled actions.
+// Each step has a timestamp (offset in ms from sequence start) and an action.
+// This enables coordinated performances (eyes + motion + audio in sync).
 
 struct __attribute__((packed)) SequenceStep
 {
@@ -27,7 +27,7 @@ struct __attribute__((packed)) SequenceStep
 		ActionBodyTiltSideways, // param1 = degree
 		ActionAudioPlay,        // param1 = track number
 		ActionAudioStop,
-		ActionSetAutomatic      // param1 = 0/1 - schaltet automatic-Mode auf Face/Neck/Body
+		ActionSetAutomatic      // param1 = 0/1 - toggles automatic mode on Face/Neck/Body
 	};
 
 	Action action;
@@ -35,35 +35,35 @@ struct __attribute__((packed)) SequenceStep
 	int16_t param2;
 };
 
-static_assert(sizeof(SequenceStep) == 7, "SequenceStep should pack to 7 bytes (for EEPROM-Blob)");
+static_assert(sizeof(SequenceStep) == 7, "SequenceStep should pack to 7 bytes (for EEPROM blob)");
 
 class HuyangSequence
 {
 public:
 	HuyangSequence(HuyangFace *face, HuyangNeck *neck, HuyangBody *body, HuyangAudio *audio);
 
-	// Eigene Sequenz abspielen (Step-Array muss persistent bleiben waehrend Wiedergabe)
+	// Play a sequence (the step array must remain valid during playback)
 	void play(const SequenceStep *steps, size_t numSteps, const char *name = "");
 	void stop();
 	bool isPlaying();
 	void loop();
 
-	// Status fuer Web-UI
+	// Status for the web UI
 	float getProgress();        // 0..1
-	const char *getName();      // aktuelle Sequenz-Name oder ""
+	const char *getName();      // current sequence name or ""
 
-	// Vordefinierte Sequenzen
-	void playGreeting();    // Begruessung: Augen auf -> Kopf-Nick -> Audio
-	void playSurprised();   // Erschrocken: weite Augen -> Audio
-	void playSad();         // Traurig: Augen Sad -> Kopf nach unten -> Audio
-	void playAngry();       // Wuetend: Augen Angry -> Body-Shake -> Audio
-	void playSelfTest();    // Hardware-Test: Servos sweepen, Eyes durchgehen, Audio anspielen
+	// Pre-defined sequences
+	void playGreeting();    // Greeting: eyes open -> head nod -> audio
+	void playSurprised();   // Surprised: wide eyes -> audio
+	void playSad();         // Sad: eyes Sad -> head down -> audio
+	void playAngry();       // Angry: eyes Angry -> body shake -> audio
+	void playSelfTest();    // Hardware test: sweep servos, cycle eye states, play audio
 
-	// Custom-Sequence: User-definierte Steps abspielen (Buffer wird intern kopiert)
+	// Custom sequence: play user-defined steps (buffer is copied internally)
 	static const size_t CUSTOM_MAX_STEPS = 32;
 	void playCustomSteps(const SequenceStep *steps, size_t count, const char *name = "custom");
 
-	// Trigger-Helper, optional
+	// Trigger helper, optional
 	bool triggerByName(const String &name); // "greeting", "surprised", "sad", "angry", "selftest", "custom"
 
 private:

@@ -36,7 +36,7 @@ void HuyangWifi::loop()
 
 	if (!_isAP)
 	{
-		// STA-Mode: bei Disconnect periodisch reconnect versuchen
+		// STA mode: periodically attempt reconnect on disconnect
 		bool connected = (WiFi.status() == WL_CONNECTED);
 
 		if (!connected)
@@ -60,25 +60,25 @@ void HuyangWifi::loop()
 	}
 	else
 	{
-		// AP-Mode: alle 60s testen ob das echte WLAN wieder da ist
+		// AP mode: every 60s, check whether the real WiFi is back
 		if (_config->data.wifiMode == 1 && strlen(_config->data.wifiSSID) > 0)
 		{
 			if (now - _lastStaRetryFromAp > _staRetryFromApInterval)
 			{
 				_lastStaRetryFromAp = now;
-				Serial.println(F("AP-Mode: pruefe ob STA-WLAN wieder verfuegbar..."));
+				Serial.println(F("AP mode: checking if STA WiFi is available again..."));
 
 				if (tryConnectSTA(5))
 				{
-					// Erfolg! AP runterfahren, STA uebernimmt
-					Serial.println(F("STA wieder verfuegbar - AP-Mode wird beendet"));
+					// Success! Shut down AP, STA takes over
+					Serial.println(F("STA available - leaving AP mode"));
 					stopAP();
 					_isAP = false;
 					startMDNS();
 				}
 				else
 				{
-					Serial.println(F("STA noch nicht da, bleibe im AP-Mode"));
+					Serial.println(F("STA not available yet, staying in AP mode"));
 				}
 			}
 		}
@@ -136,7 +136,7 @@ void HuyangWifi::reconnect()
 
 void HuyangWifi::connectSTA()
 {
-	// Wrapper fuer Abwaertskompatibilitaet - nutzt Default-Timeout 5s beim Boot
+	// Wrapper for backwards compatibility - uses default timeout 5s at boot
 	tryConnectSTA(5);
 }
 

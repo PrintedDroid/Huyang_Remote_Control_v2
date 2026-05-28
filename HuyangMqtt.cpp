@@ -71,7 +71,7 @@ void HuyangMqtt::reconnect()
 
 	if (ok)
 	{
-		Serial.println(F(" verbunden"));
+		Serial.println(F(" connected"));
 		// Subscribe alle Command-Topics
 		String sub = _baseTopic + "/cmd/#";
 		_mqtt.subscribe(sub.c_str());
@@ -82,7 +82,7 @@ void HuyangMqtt::reconnect()
 	}
 	else
 	{
-		Serial.print(F(" fehlgeschlagen, rc="));
+		Serial.print(F(" connect failed, rc="));
 		Serial.println(_mqtt.state());
 	}
 }
@@ -143,7 +143,7 @@ void HuyangMqtt::publishDiscovery()
 		pub("select", "eyes", p);
 	}
 
-	Serial.println(F("MQTT: HA-Discovery publiziert"));
+	Serial.println(F("MQTT: HA discovery published"));
 }
 
 void HuyangMqtt::handleMessage(char *topic, byte *payload, unsigned int length)

@@ -113,12 +113,12 @@ HuyangFace::EyeState HuyangFace::getStateFrom(uint8_t state)
 	return HuyangFace::EyeState::None;
 }
 
-// --- Eye Color (User-konfigurierbar via Web/CLI) ---
+// --- Eye Color (user-configurable via web/CLI) ---
 
 void HuyangFace::setEyeColorRGB(uint8_t r, uint8_t g, uint8_t b)
 {
 	_eyeR = r; _eyeG = g; _eyeB = b;
-	// Display verwendet invertierte Farben (siehe _huyangEyeColor-Init)
+	// Display uses inverted colors (see _huyangEyeColor init)
 	_huyangEyeColor = tftColor(255 - r, 255 - g, 255 - b);
 
 	redrawOpenEyes();
@@ -134,7 +134,7 @@ uint32_t HuyangFace::getEyeColorHex()
 	return ((uint32_t)_eyeR << 16) | ((uint32_t)_eyeG << 8) | _eyeB;
 }
 
-// --- Pupille ---
+// --- Pupil ---
 
 void HuyangFace::setPupilEnabled(bool on)
 {
@@ -148,7 +148,7 @@ bool HuyangFace::getPupilEnabled() { return _pupilEnabled; }
 void HuyangFace::setPupilColorRGB(uint8_t r, uint8_t g, uint8_t b)
 {
 	_pupilR = r; _pupilG = g; _pupilB = b;
-	// Display invertiert genauso wie Eye-Farbe
+	// Display inverts the same way as the eye color
 	_pupilColor565 = tftColor(255 - r, 255 - g, 255 - b);
 	if (_pupilEnabled) redrawOpenEyes();
 }
@@ -176,7 +176,7 @@ void HuyangFace::setClosedEyeColorRGB(uint8_t r, uint8_t g, uint8_t b)
 {
 	_closedR = r; _closedG = g; _closedB = b;
 	_huyangClosedEyeColor = tftColor(255 - r, 255 - g, 255 - b);
-	// Re-render geschlossene Augen
+	// Re-render closed eyes
 	if (_leftEyeState == Closed) _leftEye->fillScreen(_huyangClosedEyeColor);
 	if (_rightEyeState == Closed) _rightEye->fillScreen(_huyangClosedEyeColor);
 }
@@ -205,7 +205,7 @@ void HuyangFace::updatePupilIdle()
 	if (now - _pupilLastMove < _pupilNextInterval) return;
 
 	int16_t maxOffsetX = (_tftDisplayHeight / 2) - _pupilRadius - 20;
-	int16_t maxOffsetY = maxOffsetX / 2; // vertikal weniger Bewegung
+	int16_t maxOffsetY = maxOffsetX / 2; // less vertical movement
 	int16_t oldX = _pupilCurrX, oldY = _pupilCurrY;
 	_pupilCurrX = random(-maxOffsetX, maxOffsetX + 1);
 	_pupilCurrY = random(-maxOffsetY, maxOffsetY + 1);
@@ -214,7 +214,7 @@ void HuyangFace::updatePupilIdle()
 
 	int16_t cx = _tftDisplayWidth / 2;
 	int16_t cy = _tftDisplayHeight / 2;
-	// alte Pupille mit Augenfarbe ueberschreiben, neue zeichnen
+	// Overwrite old pupil position with eye color, then draw new one
 	if (_leftEyeState == Open) {
 		_leftEye->fillCircle(cx + oldX, cy + oldY, _pupilRadius + 1, _huyangEyeColor);
 		_leftEye->fillCircle(cx + _pupilCurrX, cy + _pupilCurrY, _pupilRadius, _pupilColor565);
@@ -227,7 +227,7 @@ void HuyangFace::updatePupilIdle()
 
 void HuyangFace::redrawOpenEyes()
 {
-	// Wenn ein Auge offen ist, neu fuellen und ggf. Pupille zeichnen
+	// If an eye is open, refill it and draw the pupil if enabled
 	if (_leftEyeState == Open || _leftEyeState == Blink) {
 		_leftEye->fillScreen(_huyangEyeColor);
 		drawPupil(_leftEye);

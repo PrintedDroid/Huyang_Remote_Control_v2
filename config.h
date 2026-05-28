@@ -19,15 +19,15 @@
 // Webserver Port
 #define WebServerPort 80
 
-// Web-Interface Authentication (HTTP Basic Auth)
-// Auf true setzen um Login-Schutz zu aktivieren. Standard-Credentials unten anpassen!
+// Web Interface Authentication (HTTP Basic Auth)
+// Set to true to enable login protection. Adjust default credentials below!
 #define HUYANG_WEB_AUTH_ENABLED false
 #define HUYANG_WEB_USER "admin"
 #define HUYANG_WEB_PASS "huyang"
 
-// MQTT-Integration (optional, fuer Home-Assistant etc.)
-// Wenn true: PubSubClient-Library muss installiert sein!
-// Bei false (default) kompiliert HuyangMqtt zu nichts.
+// MQTT integration (optional, for Home Assistant etc.)
+// If true: PubSubClient library must be installed!
+// When false (default), HuyangMqtt compiles to a no-op stub.
 #define HUYANG_MQTT_ENABLED false
 #define HUYANG_MQTT_HOST "192.168.1.10"
 #define HUYANG_MQTT_PORT 1883

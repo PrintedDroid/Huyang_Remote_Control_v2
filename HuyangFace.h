@@ -33,13 +33,13 @@ public:
 
 	EyeState getStateFrom(uint8_t state);
 
-	// User-konfigurierbare Augenfarbe (RGB888 vom Web/CLI)
-	// Stored im selben "inverted"-Format wie der Default-Wert (siehe _huyangEyeColor Init)
+	// User-configurable eye color (RGB888 from web/CLI)
+	// Stored in the same "inverted" format as the default value (see _huyangEyeColor init)
 	void setEyeColorRGB(uint8_t r, uint8_t g, uint8_t b);
 	void setEyeColorHex(uint32_t rgb);          // 0xRRGGBB
-	uint32_t getEyeColorHex();                  // gibt aktuell gesetzte Farbe als 0xRRGGBB zurueck
+	uint32_t getEyeColorHex();                  // returns currently set color as 0xRRGGBB
 
-	// Pupille - optional, Standardfarbe Schwarz, User-konfigurierbar
+	// Pupil - optional, default color black, user-configurable
 	void setPupilEnabled(bool on);
 	bool getPupilEnabled();
 	void setPupilColorRGB(uint8_t r, uint8_t g, uint8_t b);
@@ -48,7 +48,7 @@ public:
 	void setPupilRadius(uint8_t px);    // 6 - 80 px
 	uint8_t getPupilRadius();
 
-	// Geschlossene-Augen-Farbe (auch fuer Focus/Sad/Angry da diese die "geschlossene" Farbe nutzen)
+	// Closed-eye color (also used for Focus/Sad/Angry as they share the "closed" color)
 	void setClosedEyeColorRGB(uint8_t r, uint8_t g, uint8_t b);
 	void setClosedEyeColorHex(uint32_t rgb);
 	uint32_t getClosedEyeColorHex();
@@ -66,22 +66,22 @@ private:
 	uint16_t _huyangEyeColor = tftColor(255 - 255, 255 - 221, 255 - 34); // 0xFD20
 	uint16_t _huyangClosedEyeColor = tftColor(255, 255, 255);
 
-	// Gespeicherte User-RGB (vor der Display-Invertierung) - fuer Echo zurueck ans Web-UI
+	// Stored user RGB (before display inversion) - for echo back to the web UI
 	uint8_t _eyeR = 255, _eyeG = 221, _eyeB = 34;
 
-	// Pupille - default aus, Schwarz
+	// Pupil - default off, black
 	bool _pupilEnabled = false;
 	uint8_t _pupilR = 0, _pupilG = 0, _pupilB = 0;
 	uint16_t _pupilColor565 = 0x0000;
-	uint8_t _pupilRadius = 30; // px, default mittel
+	uint8_t _pupilRadius = 30; // px, medium default
 
-	// Pupillen-Idle-Bewegung (im Automatic-Mode wandert die Pupille leicht)
+	// Pupil idle movement (in automatic mode the pupil drifts slightly)
 	int16_t _pupilCurrX = 0, _pupilCurrY = 0;
 	unsigned long _pupilLastMove = 0;
 	unsigned long _pupilNextInterval = 2500;
 	void updatePupilIdle();
 
-	// Closed-Eye User-RGB (vor der Display-Invertierung)
+	// Closed-eye user RGB (before display inversion)
 	uint8_t _closedR = 255, _closedG = 255, _closedB = 255;
 	void drawPupil(Arduino_GFX *eye);
 	void redrawOpenEyes(); // helper: re-fill + pupil auf beide Augen wenn offen

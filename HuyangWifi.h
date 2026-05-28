@@ -34,10 +34,10 @@ private:
 	unsigned long _lastReconnectAttempt = 0;
 	unsigned long _reconnectInterval = 30000; // 30s between reconnect attempts in STA mode
 	unsigned long _lastStaRetryFromAp = 0;
-	unsigned long _staRetryFromApInterval = 60000; // 60s zwischen STA-Retry-Versuchen aus AP-Mode
+	unsigned long _staRetryFromApInterval = 60000; // 60s between STA retry attempts from AP mode
 
 	void connectSTA();
-	bool tryConnectSTA(uint8_t timeoutSeconds); // non-blocking-friendly variant, gibt true bei Erfolg
+	bool tryConnectSTA(uint8_t timeoutSeconds); // non-blocking-friendly variant, returns true on success
 	void startAP();
 	void stopAP();
 	void startMDNS();

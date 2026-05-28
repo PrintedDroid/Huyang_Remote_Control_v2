@@ -14,8 +14,8 @@
 #include <ESPAsyncWebServer.h>
 #endif
 
-// Kein LittleFS noetig: UI-Assets liegen in WebAssets.h (PROGMEM),
-// Custom-Sequence liegt in HuyangConfig (EEPROM)
+// No LittleFS needed: UI assets live in WebAssets.h (PROGMEM),
+// custom sequence lives in HuyangConfig (EEPROM)
 
 #include "HuyangFace.h"
 #include "HuyangNeck.h"
@@ -23,7 +23,7 @@
 #include "HuyangAudio.h"
 #include "HuyangSequence.h"
 
-// Fwd-Decl - vermeidet zirkulaere Includes mit HuyangWifi/HuyangMqtt/HuyangConfig
+// Forward declarations - avoid circular includes with HuyangWifi/HuyangMqtt/HuyangConfig
 class HuyangWifi;
 class HuyangMqtt;
 class HuyangConfig;
@@ -96,7 +96,7 @@ private:
 	String _authUser;
 	String _authPass;
 	bool checkAuth(AsyncWebServerRequest *request);
-	bool checkSameOrigin(AsyncWebServerRequest *request); // CSRF: nur wenn _authEnabled aktiv
+	bool checkSameOrigin(AsyncWebServerRequest *request); // CSRF: only enforced when _authEnabled
 
 	String _postBodyBuffer;
 
