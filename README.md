@@ -27,6 +27,55 @@ Designed for the DroidDivision Huyang build with the Printed-Droid PCB.
 
 [Full Changelog](changelog.md)
 
+### Version 2.9 (2026-05) — Single-Upload, no LittleFS
+
+- **UI-Assets in PROGMEM eingebettet** (WebAssets.h, auto-generiert via `gen-webassets.ps1`)
+- LittleFS-Dependency komplett entfernt
+- Custom-Sequence-Storage von LittleFS auf EEPROM umgestellt
+- HuyangConfig: Version 3, EEPROM-Size 1024, customSeqBlob[224]
+- **End-User-Workflow:** nur Sketch flashen, kein LittleFS-Plugin mehr noetig
+- Flash steigt um ~67 KB (UI-Assets), kein RAM-Mehrverbrauch
+
+### Version 2.8 (2026-05) — Big-Feature-Bundle
+
+- Eye-Color-Presets (Huyang, Sith, Jedi, K-2SO, White, Toxic)
+- Pupillen-Groesse als Slider (6-80 px)
+- Closed-Eye-Color konfigurierbar
+- Pupillen-Idle-Bewegung (im Automatic-Mode wandert die Pupille)
+- Volume-Mute-Button
+- Servo-Speed-Presets (slow/normal/fast)
+- Self-Test-Sequenz + /test/run Endpoint
+- Sequence-Progress-Bar in Status-Bar
+- Custom-Sequence-Editor (JSON-Editor, in v2.9 nach EEPROM verschoben)
+- Fullscreen/Kiosk-Modus
+- Heap-Monitor in Status-Bar (warnt bei <8 KB)
+- Settings-Page komplett funktional (Feature-Flags, Backup/Restore, Reboot, Factory-Reset)
+- Calibration-Page funktional (PCA9685-Channel-Slider 150-595)
+- API-Dokumentations-Seite unter /api
+- WiFi-Scan + Selector im Web-Interface
+- MQTT Home-Assistant-Auto-Discovery
+- Simpler CSRF-Schutz auf state-aendernden GETs
+
+### Version 2.7 (2026-05) — Theme-Trennung + Light-Mode
+
+- Eye-Color faerbt nur Eye-Vorschau-Kreise, nicht UI-Akzentfarbe
+- Light-Theme als Option (toggle-Button, persistiert in localStorage)
+
+### Version 2.6 (2026-05) — Pupillen-Feature + Credits
+
+- Pupille als optionales Feature (an/aus per Checkbox, Farbe per Color-Picker, Default Schwarz)
+- HuyangFace::setPupil* APIs
+- Endpoint /eye/pupil
+- Footer: "Made with heart by Jeanette Mueller — Enhanced by Printed-Droid"
+
+### Version 2.5 (2026-05) — Responsive Redesign & Eye-Color
+
+- CSS komplett neu (mobile-first responsive, max-width 720px)
+- Card-basiertes Layout, kompakte Schriften (14-15 px)
+- Modernes Dark Theme mit CSS Custom Properties
+- User-konfigurierbare Augenfarbe ueber Color-Picker
+- HuyangFace::setEyeColor APIs + /eye/color Endpoint
+
 ### Version 2.4 (2026-05)
 
 **Web-UI Polish & Multi-Client**
