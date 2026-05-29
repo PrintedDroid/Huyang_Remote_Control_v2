@@ -1,0 +1,18 @@
+<h4>Neck</h4>
+
+<div class="joystickContainer">
+    <div id="joyNeck" class="joystick"></div>
+</div>
+<div id="neck_state" class="remote_state">rot 0 | fwd 0 | side 0</div>
+
+<div class="slidecontainer">
+    Tilt
+    <input id="slider_neckTiltSideways" type="range" min="-100" max="100" value="0" class="slider" onInput="sendNeckUpdate()">
+</div>
+
+<div class="menuContainer">
+    <span class="speed_label">Speed:</span>
+    <a href="#" class="button" onclick="setServoSpeed('slow');   return false;">SLOW</a>
+    <a href="#" class="button primary" onclick="setServoSpeed('normal'); return false;">NORMAL</a>
+    <a href="#" class="button" onclick="setServoSpeed('fast');   return false;">FAST</a>
+</div>

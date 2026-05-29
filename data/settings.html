@@ -1,0 +1,128 @@
+<h4>Settings</h4>
+
+<div class="menuContainer">
+    <a href="/index.html" class="button">← Start</a>
+    <a href="/calibration.html" class="button">Calibration</a>
+    <a href="/api" class="button">API Docs</a>
+</div>
+
+<hr>
+
+<h4>Features</h4>
+<div id="features_container" style="text-align: left; padding: 0 12px;">
+    Loading…
+</div>
+<div class="menuContainer">
+    <a href="#" class="button primary" onclick="saveFeatures(); return false;">Save Features</a>
+</div>
+
+<hr>
+
+<h4>WiFi</h4>
+<div id="wifi_container" style="text-align: left; padding: 0 12px;">
+    <div style="font-size:12px; color: var(--text-dim); margin-bottom: 8px;">Scan + connect in AP mode if STA was lost.</div>
+    <div class="menuContainer">
+        <a href="#" class="button" onclick="wifiScan(); return false;">🔄 Scan</a>
+    </div>
+    <div id="wifi_list" style="margin-top: 8px;"></div>
+    <div style="font-size:12px; color: var(--text-dim); margin: 12px 0 4px 0;">Or enter manually:</div>
+    <input id="wifi_ssid_in" placeholder="SSID" class="audio_input" style="width: 90%;" /><br>
+    <input id="wifi_pass_in" placeholder="Password" type="password" class="audio_input" style="width: 90%; margin-top: 6px;" /><br>
+    <div class="menuContainer">
+        <a href="#" class="button primary" onclick="wifiConnect(); return false;">Connect</a>
+    </div>
+</div>
+
+<hr>
+
+<h4>System</h4>
+<div class="menuContainer">
+    <a href="#" class="button" onclick="configBackup(); return false;">⬇ Backup Config</a>
+    <a href="#" class="button" onclick="document.getElementById('config_upload').click(); return false;">⬆ Restore Config</a>
+    <input id="config_upload" type="file" accept="application/json" style="display:none" onchange="configRestore(this)" />
+    <a href="#" class="button" onclick="runSelfTest(); return false;">▶ Run Self-Test</a>
+</div>
+<div class="menuContainer">
+    <a href="#" class="button" style="border-color:#c33" onclick="rebootEsp(); return false;">⟳ Reboot ESP</a>
+    <a href="#" class="button" style="border-color:#c33" onclick="factoryReset(); return false;">⚠ Factory Reset</a>
+</div>
+
+<script>
+// ====== Features ======
+const FEATURE_KEYS = ['enableEyes','enableMonacle','enableNeckMovement','enableHeadRotation','enableBodyMovement','enableBodyRotation','enableTorsoLights'];
+function loadFeatures() {
+    fetch('/config/get').then(r => r.json()).then(cfg => {
+        const c = document.getElementById('features_container');
+        c.innerHTML = '';
+        FEATURE_KEYS.forEach(k => {
+            const id = 'feat_' + k;
+            const checked = cfg[k] ? 'checked' : '';
+            const label = k.replace('enable', '');
+            c.innerHTML += '<label style="display:block; padding:6px 0;"><input type="checkbox" id="' + id + '" ' + checked + ' style="width:20px;height:20px;vertical-align:middle;margin-right:8px;accent-color:var(--accent)"> ' + label + '</label>';
+        });
+    }).catch(() => {
+        document.getElementById('features_container').innerHTML = '<span style="color:var(--danger)">Could not load config</span>';
+    });
+}
+function saveFeatures() {
+    const data = {};
+    FEATURE_KEYS.forEach(k => { data[k] = document.getElementById('feat_' + k).checked; });
+    fetch('/config/set', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) })
+        .then(r => r.json()).then(() => alert('Saved. Reboot may be required.'));
+}
+
+// ====== WiFi ======
+function wifiScan() {
+    const list = document.getElementById('wifi_list');
+    list.innerHTML = 'scanning…';
+    fetch('/wifi/scan').then(r => r.json()).then(d => {
+        if (!d.networks || d.networks.length === 0) { list.innerHTML = '(keine Netze gefunden)'; return; }
+        list.innerHTML = d.networks.map(n =>
+            '<div style="padding:6px; border-bottom:1px solid var(--border); cursor:pointer;" onclick="pickWifi(\'' + n.ssid.replace(/'/g, '') + '\')">'
+            + n.ssid + ' <span style="color:var(--text-dim); float:right;">' + n.rssi + ' dBm</span></div>'
+        ).join('');
+    });
+}
+function pickWifi(ssid) { document.getElementById('wifi_ssid_in').value = ssid; }
+function wifiConnect() {
+    const ssid = document.getElementById('wifi_ssid_in').value;
+    const pass = document.getElementById('wifi_pass_in').value;
+    if (!ssid) { alert('SSID fehlt'); return; }
+    fetch('/wifi/connect?ssid=' + encodeURIComponent(ssid) + '&pass=' + encodeURIComponent(pass))
+        .then(r => r.json()).then(() => alert('WiFi config saved. Reboot for new STA attempt.'));
+}
+
+// ====== System ======
+function configBackup() {
+    fetch('/config/get').then(r => r.json()).then(cfg => {
+        const blob = new Blob([JSON.stringify(cfg, null, 2)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'huyang-config-' + new Date().toISOString().slice(0,10) + '.json';
+        a.click();
+    });
+}
+function configRestore(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = function (e) {
+        if (!confirm('Restore config from ' + file.name + '? Current settings will be overwritten.')) return;
+        fetch('/config/set', { method:'POST', headers:{'Content-Type':'application/json'}, body: e.target.result })
+            .then(r => r.json()).then(() => alert('Restored. Reboot recommended.'));
+    };
+    r.readAsText(file);
+}
+function runSelfTest() { fetch('/test/run').then(() => alert('Self-Test running, takes ~23s')); }
+function rebootEsp() {
+    if (!confirm('Really reboot the ESP?')) return;
+    fetch('/reboot').then(() => alert('Reboot sent, wait ~5s...'));
+}
+function factoryReset() {
+    if (!confirm('Factory reset erases ALL settings (WiFi, features). Really proceed?')) return;
+    if (!confirm('Really really? This cannot be undone.')) return;
+    fetch('/config/reset').then(() => alert('Reset done. Reboot follows.'));
+}
+
+loadFeatures();
+</script>

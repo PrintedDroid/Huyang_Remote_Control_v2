@@ -1,0 +1,65 @@
+<h4>Face</h4>
+
+<div class="eye_color_row">
+    <label for="eye_color">Eye:</label>
+    <input id="eye_color" type="color" value="#ffdd22" onChange="sendEyeColor()" />
+    <span id="eye_color_label">#ffdd22</span>
+</div>
+<div class="preset_row">
+    <span class="preset_chip" style="background:#ffdd22"  onclick="setEyeColorPreset('ffdd22')" title="Huyang"></span>
+    <span class="preset_chip" style="background:#ff2020"  onclick="setEyeColorPreset('ff2020')" title="Sith"></span>
+    <span class="preset_chip" style="background:#22aaff"  onclick="setEyeColorPreset('22aaff')" title="Jedi"></span>
+    <span class="preset_chip" style="background:#ff7a00"  onclick="setEyeColorPreset('ff7a00')" title="K-2SO"></span>
+    <span class="preset_chip" style="background:#ffffff"  onclick="setEyeColorPreset('ffffff')" title="White"></span>
+    <span class="preset_chip" style="background:#00ff66"  onclick="setEyeColorPreset('00ff66')" title="Toxic"></span>
+</div>
+
+<div class="eye_color_row">
+    <label><input id="pupil_enabled" type="checkbox" onChange="sendPupilSettings()" /> Pupil</label>
+    <input id="pupil_color" type="color" value="#000000" onChange="sendPupilSettings()" />
+    <span id="pupil_color_label">#000000</span>
+</div>
+<div class="slidecontainer">
+    Pupil size <span id="pupil_size_label">30</span> px
+    <input id="slider_pupilSize" type="range" min="6" max="80" value="30" class="slider" onInput="sendPupilSize()" />
+</div>
+
+<div class="eye_color_row">
+    <label for="closed_eye_color">Closed-Eye:</label>
+    <input id="closed_eye_color" type="color" value="#ffffff" onChange="sendClosedEyeColor()" />
+    <span id="closed_eye_color_label">#ffffff</span>
+</div>
+
+<div class="menu_eye_buttons">
+    <div class="eye_open"  onClick="sendEyeUpdate('all', 1);" id="eye_all_open">OPEN</div>
+    <div class="eye_close" onClick="sendEyeUpdate('all', 2);" id="eye_all_close">CLOSE</div>
+    <div class="eye_open"  onClick="sendEyeUpdate('all', 3);" id="eye_all_blink">BLINK</div>
+    <div class="eye_focus" onClick="sendEyeUpdate('all', 4);" id="eye_all_focus"><div></div></div>
+    <div class="eye_sad"   onClick="sendEyeUpdate('all', 5);" id="eye_all_sad"><div class="right"></div>SAD</div>
+    <div class="eye_angry" onClick="sendEyeUpdate('all', 6);" id="eye_all_angry"><div class="left"></div>ANGRY</div>
+</div>
+
+<div class="eye_preview_row">
+    <div class="eyeContainer">
+        <h4>Left</h4>
+        <div class="eye" onClick="sendEyeUpdate('left', 3);" id="eye_left_blink"><h5>BLINK</h5></div>
+        <div class="eye_buttons">
+            <div class="eye_open"  onClick="sendEyeUpdate('left', 1);" id="eye_left_open">OPEN</div>
+            <div class="eye_close" onClick="sendEyeUpdate('left', 2);" id="eye_left_close">CLOSE</div>
+            <div class="eye_focus" onClick="sendEyeUpdate('left', 4);" id="eye_left_focus"><div></div></div>
+            <div class="eye_sad"   onClick="sendEyeUpdate('left', 5);" id="eye_left_sad"><div class="right"></div></div>
+            <div class="eye_angry" onClick="sendEyeUpdate('left', 6);" id="eye_left_angry"><div class="left"></div></div>
+        </div>
+    </div>
+    <div class="eyeContainer">
+        <h4>Right</h4>
+        <div class="eye" onClick="sendEyeUpdate('right', 3);" id="eye_right_blink"><h5>BLINK</h5></div>
+        <div class="eye_buttons">
+            <div class="eye_open"  onClick="sendEyeUpdate('right', 1);" id="eye_right_open">OPEN</div>
+            <div class="eye_close" onClick="sendEyeUpdate('right', 2);" id="eye_right_close">CLOSE</div>
+            <div class="eye_focus" onClick="sendEyeUpdate('right', 4);" id="eye_right_focus"><div></div></div>
+            <div class="eye_sad"   onClick="sendEyeUpdate('right', 5);" id="eye_right_sad"><div class="left"></div></div>
+            <div class="eye_angry" onClick="sendEyeUpdate('right', 6);" id="eye_right_angry"><div class="right"></div></div>
+        </div>
+    </div>
+</div>

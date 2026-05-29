@@ -1,0 +1,327 @@
+/* ============================================================================
+   Huyang Remote Control v2.4 - Responsive UI
+   Mobile-first, scales 320px ... 1920px+
+   Dark theme, Huyang-yellow accents (#fd2)
+   ============================================================================ */
+
+:root {
+	--bg: #0a0a0a;
+	--bg-elev: #1a1a1a;
+	--bg-elev-2: #242424;
+	--border: #333;
+	--text: #eee;
+	--text-dim: #888;
+	--accent: #fd2;           /* UI accent (fixed, never changes) */
+	--accent-dark: #b90;
+	--eye-color: #ffdd22;     /* current eye color - changes with user picker */
+	--eye-color-dark: #b90;   /* Border-Variante der Augenfarbe */
+	--pupil-color: #000000;
+	--danger: #c33;
+	--ok: #6c6;
+	--warn: #fa3;
+}
+
+/* Light theme - slightly gray, not stark white */
+[data-theme="light"] {
+	--bg: #c8c8cc;          /* main background - medium gray, not pure white */
+	--bg-elev: #d8d8dc;     /* sections - slightly lighter */
+	--bg-elev-2: #b8b8bc;   /* slider/input bg - slightly darker */
+	--border: #9090a0;
+	--text: #1a1a1c;
+	--text-dim: #50505a;
+	/* Accent + eye color remain user-controlled, untouched by theme */
+}
+
+* { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	padding: 36px 12px 24px 12px;
+	font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+	font-size: 14px;
+	background-color: var(--bg);
+	color: var(--text);
+	text-align: center;
+	min-height: 100vh;
+}
+
+/* Container - max-width so it doesn't sprawl on desktop */
+.app { max-width: 720px; margin: 0 auto; }
+
+h4 { margin: 0 0 8px 0; font-size: 15px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+/* ===== Status-Bar oben ===== */
+.status_bar {
+	position: fixed; top: 0; left: 0; right: 0; height: 28px;
+	line-height: 28px;
+	font-size: 11px; letter-spacing: 0.5px;
+	background-color: var(--bg-elev); color: var(--text-dim);
+	text-align: center;
+	z-index: 9999;
+	border-bottom: 1px solid var(--border);
+	transition: background-color 0.3s;
+}
+.status_bar .status_net { color: var(--ok); margin-left: 12px; }
+.status_bar.error { background-color: #5a1010; color: #fff; }
+.status_bar.warning { background-color: #5a3a10; color: #fff; }
+
+/* Sequence-Progress-Bar in der Status-Bar */
+.status_progress {
+	position: absolute; bottom: 0; left: 0; right: 0;
+	height: 2px; background: transparent;
+}
+#status_progress_bar {
+	height: 100%; width: 0%;
+	background: var(--accent);
+	transition: width 0.4s linear;
+}
+.speed_label { font-size: 12px; color: var(--text-dim); align-self: center; margin-right: 4px; }
+
+/* ===== Buttons ===== */
+.button {
+	display: inline-block;
+	padding: 10px 16px;
+	margin: 4px;
+	background-color: var(--bg-elev);
+	color: var(--text);
+	text-decoration: none;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	font-size: 13px;
+	cursor: pointer;
+	transition: background-color 0.15s, border-color 0.15s;
+	min-height: 44px; /* touch target */
+	line-height: 24px;
+}
+.button:hover { background-color: var(--bg-elev-2); border-color: var(--accent-dark); }
+.button.primary { background-color: var(--accent); color: #000; border-color: var(--accent); }
+.button.primary:hover { background-color: var(--accent-dark); }
+
+a:link, a:visited, a:active { color: var(--text); text-decoration: none; }
+
+.menuContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	margin: 0 auto;
+}
+
+/* ===== Card-Section ===== */
+.section {
+	background-color: var(--bg-elev);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 14px;
+	margin: 12px 0;
+}
+
+/* ===== Face / Eyes ===== */
+.menu_eye_buttons,
+.eye_buttons {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 8px;
+	margin: 8px 0;
+}
+
+.menu_eye_buttons > div,
+.eye_buttons > div {
+	width: 56px; height: 56px;
+	border-radius: 50%;
+	border: 3px solid var(--accent);
+	display: flex; align-items: center; justify-content: center;
+	font-size: 10px; font-weight: 600;
+	color: #000;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	transition: transform 0.1s, border-color 0.15s;
+	user-select: none;
+}
+.menu_eye_buttons > div:active,
+.eye_buttons > div:active { transform: scale(0.92); }
+
+.eye_open { background-color: var(--accent); }
+.eye_close { background-color: #000; color: var(--accent); }
+.eye_focus { background-color: #000; }
+.eye_focus > div {
+	width: 100%; height: 16px;
+	background-color: var(--accent);
+	position: absolute; top: 50%; transform: translateY(-50%);
+}
+.eye_sad, .eye_angry { background-color: var(--accent); position: relative; }
+.eye_sad > div, .eye_angry > div {
+	width: calc(100% + 16px); height: 28px;
+	position: absolute; background-color: #000; top: -16px;
+}
+.eye_sad > .left, .eye_angry > .left { left: 0; transform: rotate(25deg); }
+.eye_sad > .right, .eye_angry > .right { left: -16px; transform: rotate(-25deg); }
+
+.selected { border-color: var(--danger) !important; box-shadow: 0 0 0 2px rgba(204, 51, 51, 0.3); }
+
+/* Big preview eye circles */
+.eye_preview_row {
+	display: flex;
+	justify-content: center;
+	gap: 24px;
+	margin: 12px 0;
+	flex-wrap: wrap;
+}
+.eyeContainer {
+	display: flex; flex-direction: column; align-items: center; gap: 8px;
+	flex: 1 1 200px;
+	max-width: 280px;
+}
+.eye {
+	width: 90px; height: 90px;
+	border-radius: 50%;
+	background-color: var(--eye-color);
+	border: 4px solid var(--eye-color);
+	display: flex; align-items: center; justify-content: center;
+	cursor: pointer;
+	transition: transform 0.1s, background-color 0.2s, border-color 0.2s;
+}
+.eye:active { transform: scale(0.95); }
+.eye > h5 { margin: 0; font-size: 12px; color: #000; font-weight: 700; }
+
+/* Color picker for eyes */
+.eye_color_row {
+	display: flex; justify-content: center; align-items: center;
+	gap: 10px; margin: 8px 0;
+	font-size: 12px; color: var(--text-dim);
+}
+.eye_color_row input[type="color"] {
+	width: 44px; height: 44px; border: 2px solid var(--border);
+	border-radius: 8px; background: none; cursor: pointer; padding: 2px;
+}
+.eye_color_row input[type="checkbox"] {
+	width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;
+	accent-color: var(--accent); cursor: pointer;
+}
+.eye_color_row label { cursor: pointer; user-select: none; }
+
+.preset_row {
+	display: flex; justify-content: center; gap: 8px;
+	flex-wrap: wrap; margin: 4px 0 12px 0;
+}
+.preset_chip {
+	width: 36px; height: 36px; border-radius: 50%;
+	border: 2px solid var(--border); cursor: pointer;
+	transition: transform 0.1s, border-color 0.15s;
+	display: inline-block;
+}
+.preset_chip:hover { border-color: var(--accent); }
+.preset_chip:active { transform: scale(0.9); }
+
+/* ===== Joystick ===== */
+.joystickContainer { display: flex; justify-content: center; margin: 8px 0; }
+.joystick {
+	width: 240px; height: 240px;
+	cursor: pointer;
+	touch-action: none;
+}
+
+.remote_state {
+	font-size: 11px;
+	color: var(--text-dim);
+	font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+	margin: 4px 0 8px 0;
+	letter-spacing: 0.5px;
+}
+
+/* ===== Slider ===== */
+.slidecontainer {
+	margin: 8px 0;
+	font-size: 12px;
+	color: var(--text-dim);
+}
+.slider {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	height: 28px;
+	background: var(--bg-elev-2);
+	outline: none;
+	border-radius: 14px;
+	border: 1px solid var(--border);
+	margin: 6px 0;
+}
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none; appearance: none;
+	width: 36px; height: 36px;
+	background: var(--accent);
+	cursor: pointer;
+	border-radius: 50%;
+	border: 2px solid var(--accent-dark);
+}
+.slider::-moz-range-thumb {
+	width: 36px; height: 36px;
+	background: var(--accent);
+	cursor: pointer;
+	border-radius: 50%;
+	border: 2px solid var(--accent-dark);
+}
+
+/* ===== Audio ===== */
+.audio_controls {
+	display: flex; justify-content: center; align-items: center;
+	gap: 8px; flex-wrap: wrap;
+}
+.audio_input {
+	font-size: 14px;
+	width: 80px;
+	text-align: center;
+	background-color: var(--bg-elev-2);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	padding: 10px;
+	height: 44px;
+}
+#audio_volume_label {
+	display: inline-block; min-width: 30px;
+	font-size: 12px; color: var(--text-dim);
+	font-family: monospace;
+}
+
+/* ===== Auto-button (Top bar) ===== */
+#button_automatic { background-color: var(--bg-elev-2); }
+#button_automatic.on { background-color: var(--accent); color: #000; border-color: var(--accent); }
+
+/* ===== Footer ===== */
+footer { font-size: 10px; color: var(--text-dim); margin-top: 24px; }
+
+/* ===== Responsive Tweaks ===== */
+/* Tablet and up: zwei-spaltige Eye-Vorschau gleichzeitig im View */
+@media (min-width: 480px) {
+	body { font-size: 15px; }
+	.eye { width: 100px; height: 100px; }
+	.eye > h5 { font-size: 13px; }
+	.menu_eye_buttons > div, .eye_buttons > div { width: 60px; height: 60px; font-size: 11px; }
+}
+
+/* Desktop: leichter Anstieg, aber Container bleibt max 720 */
+@media (min-width: 768px) {
+	body { padding: 40px 20px 24px 20px; }
+	.section { padding: 18px; }
+	.joystick { width: 280px; height: 280px; }
+}
+
+/* Wide screens: ein bisschen mehr Luft */
+@media (min-width: 1024px) {
+	.app { max-width: 800px; }
+	.joystick { width: 320px; height: 320px; }
+}
+
+/* Touch devices: disable hover so it doesn't stick after a tap */
+@media (hover: none) {
+	.button:hover { background-color: var(--bg-elev); border-color: var(--border); }
+}
+
+/* Loading-State Klassen */
+.hidden { display: none; }
+.clear { clear: both; }

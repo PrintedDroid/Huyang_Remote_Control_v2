@@ -1,0 +1,11 @@
+<h4>Body</h4>
+
+<div class="joystickContainer">
+    <div id="joyBody" class="joystick"></div>
+</div>
+<div id="body_state" class="remote_state">rot 0 | fwd 0 | side 0</div>
+
+<div class="slidecontainer">
+    Tilt
+    <input id="slider_bodyTiltSideways" type="range" min="-100" max="100" value="0" class="slider" onInput="sendBodyUpdate()">
+</div>

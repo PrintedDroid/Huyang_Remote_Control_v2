@@ -1,0 +1,52 @@
+<h4>Sequences</h4>
+
+<div class="menuContainer">
+    <a href="#" class="button primary" onclick="sequencePlay('greeting');  return false;">GREETING</a>
+    <a href="#" class="button primary" onclick="sequencePlay('surprised'); return false;">SURPRISED</a>
+    <a href="#" class="button primary" onclick="sequencePlay('sad');       return false;">SAD</a>
+    <a href="#" class="button primary" onclick="sequencePlay('angry');     return false;">ANGRY</a>
+    <a href="#" class="button" onclick="sequenceStop(); return false;">STOP</a>
+</div>
+
+<hr>
+
+<h4>Custom Sequence Editor</h4>
+<div style="font-size:11px; color:var(--text-dim); text-align:left; padding: 0 8px;">
+Actions: eye, neck_rot, neck_tilt_fwd, neck_tilt_side, body_rot, body_tilt_fwd, body_tilt_side, audio, audio_stop, auto<br>
+EyeState param1: 1=Open, 2=Closed, 3=Blink, 4=Focus, 5=Sad, 6=Angry
+</div>
+<textarea id="custom_seq_json" rows="14" style="width:100%; background:var(--bg-elev-2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px; font-family:monospace; font-size:11px;">{
+  "name": "custom",
+  "steps": [
+    { "atMs": 0,    "action": "auto",     "param1": 0 },
+    { "atMs": 0,    "action": "eye",      "param1": 1 },
+    { "atMs": 200,  "action": "neck_rot", "param1": -60, "param2": 600 },
+    { "atMs": 900,  "action": "neck_rot", "param1": 60,  "param2": 600 },
+    { "atMs": 1600, "action": "neck_rot", "param1": 0,   "param2": 400 },
+    { "atMs": 2000, "action": "audio",    "param1": 1 },
+    { "atMs": 2500, "action": "auto",     "param1": 1 }
+  ]
+}</textarea>
+<div class="menuContainer">
+    <a href="#" class="button" onclick="customSeqLoad(); return false;">Load saved</a>
+    <a href="#" class="button" onclick="customSeqSave(); return false;">Save</a>
+    <a href="#" class="button primary" onclick="customSeqPlay(); return false;">▶ Play Custom</a>
+</div>
+
+<script>
+function customSeqLoad() {
+    fetch('/sequence/load').then(r => r.json()).then(j => {
+        document.getElementById('custom_seq_json').value = JSON.stringify(j, null, 2);
+    });
+}
+function customSeqSave() {
+    const txt = document.getElementById('custom_seq_json').value;
+    try { JSON.parse(txt); } catch (e) { alert('Invalid JSON: ' + e.message); return; }
+    fetch('/sequence/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: txt })
+        .then(r => r.json()).then(() => alert('Saved'));
+}
+function customSeqPlay() {
+    customSeqSave();
+    setTimeout(() => sequencePlay('custom'), 200);
+}
+</script>

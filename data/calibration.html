@@ -1,0 +1,64 @@
+<h4>Servo Calibration</h4>
+
+<p style="font-size: 12px; color: var(--text-dim); text-align: left;">
+<b>Disconnect all servo horns before testing!</b><br>
+Slider bewegt PCA9685-Kanal direkt. Center-Wert notieren, dann in <code>HuyangBody.h</code> / <code>HuyangNeck.h</code> als SERVOMIN/SERVOMAX hinterlegen.
+Range: 150 (≈0°) bis 595 (≈180°), Mitte typisch ~373.
+</p>
+
+<div id="cal_container"></div>
+
+<div class="menuContainer">
+    <a href="#" class="button" onclick="calAllCenter(); return false;">All to 373 (center)</a>
+    <a href="#" class="button" onclick="calAllOff();   return false;">All OFF</a>
+</div>
+
+<script>
+(function() {
+    const channels = [
+        { ch: 1,  label: "Monocle (HuyangNeck)" },
+        { ch: 4,  label: "Head Rotate" },
+        { ch: 5,  label: "Head Top Left" },
+        { ch: 6,  label: "Head Top Right" },
+        { ch: 7,  label: "Neck Tilt" },
+        { ch: 8,  label: "Head Rotate Servo" },
+        { ch: 9,  label: "Neck Servo" },
+        { ch: 11, label: "Body Rotate (HuyangBody)" },
+        { ch: 12, label: "Body Forward Left" },
+        { ch: 13, label: "Body Forward Right" },
+        { ch: 14, label: "Body Sideways Left" },
+        { ch: 15, label: "Body Sideways Right" },
+    ];
+    const container = document.getElementById('cal_container');
+    channels.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'slidecontainer';
+        div.style.textAlign = 'left';
+        div.innerHTML = '<span style="font-size:12px;">' + c.label + ' (ch ' + c.ch + ')</span> '
+            + '<span id="cal_val_' + c.ch + '" style="float:right; font-family:monospace; font-size:12px;">373</span>'
+            + '<input id="cal_' + c.ch + '" type="range" min="150" max="595" value="373" class="slider"'
+            + ' onInput="calSet(' + c.ch + ', this.value)" />';
+        container.appendChild(div);
+    });
+})();
+
+function calSet(ch, pwm) {
+    const label = document.getElementById('cal_val_' + ch);
+    if (label) label.innerText = pwm;
+    fetch('/cal/servo?ch=' + ch + '&pwm=' + pwm).catch(() => {});
+}
+function calAllCenter() {
+    document.querySelectorAll('[id^="cal_"][type="range"]').forEach(s => {
+        s.value = 373;
+        const ch = s.id.replace('cal_', '');
+        calSet(ch, 373);
+    });
+}
+function calAllOff() {
+    // PWM 0 = Servo deaktiviert (kein Drehmoment)
+    document.querySelectorAll('[id^="cal_"][type="range"]').forEach(s => {
+        const ch = s.id.replace('cal_', '');
+        fetch('/cal/servo?ch=' + ch + '&pwm=0').catch(() => {});
+    });
+}
+</script>

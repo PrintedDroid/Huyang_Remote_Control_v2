@@ -1,0 +1,100 @@
+<h4>HTTP API Reference</h4>
+<p style="font-size: 12px; color: var(--text-dim);">Alle Endpoints liefern JSON. Bei aktiver Auth: HTTP Basic Auth Header.</p>
+
+<style>
+.api-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+.api-table th, .api-table td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.api-table th { color: var(--text-dim); font-weight: 600; }
+.api-table td.method { font-family: monospace; color: var(--accent); width: 60px; }
+.api-table td.path { font-family: monospace; color: var(--text); }
+.api-table td.desc { color: var(--text-dim); }
+.api-group { margin: 16px 0; }
+.api-group h5 { color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: 4px; margin: 12px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+</style>
+
+<div class="api-group">
+<h5>Status / System</h5>
+<table class="api-table">
+<tr><td class="method">GET</td><td class="path">/status</td><td class="desc">WiFi-Mode, IP, MQTT, Sequence-State, Heap</td></tr>
+<tr><td class="method">GET</td><td class="path">/api</td><td class="desc">Diese Doku-Seite</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>Eye / Face</h5>
+<table class="api-table">
+<tr><td class="method">GET</td><td class="path">/eye/color?hex=ffdd22</td><td class="desc">Setzt Augenfarbe (RGB888 hex)</td></tr>
+<tr><td class="method">GET</td><td class="path">/eye/closedcolor?hex=ffffff</td><td class="desc">Setzt Farbe der geschlossenen Augen</td></tr>
+<tr><td class="method">GET</td><td class="path">/eye/pupil?enabled=1&hex=000000&size=30</td><td class="desc">Pupille an/aus + Farbe + Groesse (6-80 px). Alle Params optional.</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>Trigger (kurze Aktionen)</h5>
+<table class="api-table">
+<tr><td class="method">GET</td><td class="path">/trigger/wakeup</td><td class="desc">Augen auf, Auto-Mode an</td></tr>
+<tr><td class="method">GET</td><td class="path">/trigger/sleep</td><td class="desc">Augen zu, alles Mitte</td></tr>
+<tr><td class="method">GET</td><td class="path">/trigger/nod</td><td class="desc">Kopf nicken</td></tr>
+<tr><td class="method">GET</td><td class="path">/trigger/shake</td><td class="desc">Kopf schuetteln</td></tr>
+<tr><td class="method">GET</td><td class="path">/trigger/look | /sad | /angry | /blink</td><td class="desc">Eye-State setzen</td></tr>
+<tr><td class="method">GET</td><td class="path">/trigger/random</td><td class="desc">Auto-Animation an</td></tr>
+<tr><td class="method">GET</td><td class="path">/trigger/reset</td><td class="desc">Alles auf Neutral</td></tr>
+<tr><td class="method">GET</td><td class="path">/trigger/sound?id=N</td><td class="desc">DFPlayer-Track N</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>Live-Steuerung</h5>
+<table class="api-table">
+<tr><td class="method">POST</td><td class="path">/api/post.json</td><td class="desc">JSON body: {automatic, face:{}, neck:{rotate,tiltForward,tiltSideways}, body:{...}}</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>Audio</h5>
+<table class="api-table">
+<tr><td class="method">GET</td><td class="path">/audio/play?track=N</td><td class="desc">DFPlayer-Track abspielen</td></tr>
+<tr><td class="method">GET</td><td class="path">/audio/stop</td><td class="desc">Stopp</td></tr>
+<tr><td class="method">GET</td><td class="path">/audio/volume?v=0-30</td><td class="desc">Lautstaerke</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>Sequences</h5>
+<table class="api-table">
+<tr><td class="method">GET</td><td class="path">/sequence?name=X</td><td class="desc">X = greeting, surprised, sad, angry, selftest</td></tr>
+<tr><td class="method">GET</td><td class="path">/sequence/stop</td><td class="desc">Abort the current sequence</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>Servos</h5>
+<table class="api-table">
+<tr><td class="method">GET</td><td class="path">/servo/speed?preset=slow|normal|fast</td><td class="desc">Skaliert Easing-Geschwindigkeit (0.5x / 1x / 2x)</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>System / Test</h5>
+<table class="api-table">
+<tr><td class="method">GET</td><td class="path">/test/run</td><td class="desc">Self-Test: Servos sweep, Eyes durch alle States, Audio anspielen</td></tr>
+<tr><td class="method">GET</td><td class="path">/wifi/scan</td><td class="desc">List available WiFi networks</td></tr>
+<tr><td class="method">POST</td><td class="path">/config/backup</td><td class="desc">EEPROM-Config als JSON-Download</td></tr>
+<tr><td class="method">POST</td><td class="path">/config/restore</td><td class="desc">Upload JSON back into EEPROM</td></tr>
+<tr><td class="method">GET</td><td class="path">/reboot</td><td class="desc">ESP neustarten</td></tr>
+</table>
+</div>
+
+<div class="api-group">
+<h5>Beispiele (curl)</h5>
+<pre style="background: var(--bg-elev-2); padding: 10px; border-radius: 6px; font-size: 11px; overflow-x: auto;">
+curl http://huyang.local/eye/color?hex=ff0000
+curl http://huyang.local/sequence?name=greeting
+curl http://huyang.local/audio/play?track=5
+
+# mit POST + JSON
+curl -X POST http://huyang.local/api/post.json \
+     -H "Content-Type: application/json" \
+     -d '{"neck":{"rotate":50,"tiltForward":-20}}'
+</pre>
+</div>
